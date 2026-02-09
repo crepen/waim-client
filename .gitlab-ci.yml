@@ -5,6 +5,8 @@ variables:
 stages:
   - build
   - deploy
+  - sync
+
 
 
 before_script:
@@ -30,3 +32,13 @@ deploy-container:
   stage: deploy
   script:
     - docker compose up -d --force-recreate --build
+
+
+sync-to-github:
+  stage: sync
+  script:
+    - git remote remove github || true
+    - git remote add github https://project_settings:$GITHUB_WAIM_CLIENT_TOKEN@$GITHUB_WAIM_CLIENT_REPO
+    - git push github HEAD:$CI_COMMIT_REF_NAME --force
+  only:
+    - master
