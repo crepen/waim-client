@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+.next
+**/out
+.turbo
+.git
+.DS_Store
+*.log
+# 아래 파일들은 pruner/installer 단계에서 새로 생성하거나 복사하므로 무시
+.yarn/cache
+.yarn/unplugged

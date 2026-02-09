@@ -1,0 +1,10 @@
+{
+    "page" : {
+        "login" : {
+            "login_submit_bt" : "로그인"
+        }
+    },
+    "auth" : {
+        "default_error_message" : "서버와 연결이 원활하지 않습니다."
+    }
+}

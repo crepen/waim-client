@@ -1,0 +1,32 @@
+variables:
+  WAIM_NEXUS_IMAGE_NAME: waim/client
+  WAIM_NEXUS_FULL_IMAGE: $CREPEN_NEXUS_REPO/$WAIM_NEXUS_IMAGE_NAME
+
+stages:
+  - build
+  - deploy
+
+
+before_script:
+  - echo "$WAIM_NEXUS_PASSWORD" | docker login $CREPEN_NEXUS_REPO -u $WAIM_NEXUS_ID --password-stdin
+
+after_script:
+  - docker logout $CREPEN_NEXUS_REPO
+
+build-image:
+  stage: build
+  script:
+    - echo "Building Docker Image..."
+    - >
+      docker build 
+      -t $WAIM_NEXUS_FULL_IMAGE:$CI_COMMIT_SHORT_SHA
+      -t $WAIM_NEXUS_FULL_IMAGE:latest 
+      -f apps/web/Dockerfile .
+    - echo "Pushing Image to Nexus...."
+    - docker push $WAIM_NEXUS_FULL_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $WAIM_NEXUS_FULL_IMAGE:latest
+
+deploy-container:
+  stage: deploy
+  script:
+    - docker compose up -d --force-recreate --build

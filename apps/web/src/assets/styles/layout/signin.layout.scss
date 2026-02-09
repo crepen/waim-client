@@ -1,0 +1,27 @@
+.layout.layout-signin {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .split-section {
+
+        height: 100%;
+
+        &.signin-image-section {
+            flex: 1 1 70%;
+            background-color: #192037;
+        }
+
+        &.signin-form-section {
+            
+            flex : 1 1 30%;
+            display: grid;
+            place-items: center;
+
+            min-width: 50rem;
+        }
+    }
+}

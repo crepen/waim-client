@@ -1,0 +1,35 @@
+services:
+  waim-client:
+    container_name: waim-client
+    hostname: waim-client
+    image: nexus.crepen.kro.kr/waim/client
+    environment:
+      - NODE_ENV=production
+      - WAIM_API_URL=http://waim-api:8080
+    restart: always
+    networks:
+      - crepen-waim-network
+      - nginx-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"] 
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" 
+        max-file: "3"   
+
+networks:
+  crepen-waim-network:
+    name: crepen-waim-network
+    driver: bridge
+    ipam:
+      driver: default
+  nginx-network:
+    name: nginx-network
+    external: true
+    
+
