@@ -1,0 +1,74 @@
+.project-page {
+
+
+    .project-list {
+        .project-item {
+            display: grid;
+            border: 1px solid black;
+            padding: 0.8rem;
+
+            grid-template-areas: 'alias name owner action';
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+
+            text-decoration: none;
+            color: inherit;
+
+
+            &:not(:nth-last-child(1)) {
+                margin-bottom: 0.4rem;
+            }
+
+
+            .item-alias {
+                grid-area: alias;
+            }
+
+            .item-name {
+                grid-area: name;
+            }
+
+            .item-owner-name {
+                grid-area: owner;
+            }
+
+            .item-action {
+                grid-area: action;
+            }
+
+        }
+    }
+
+
+    .project-list-pagination {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.4rem;
+        margin-block: 0.8rem;
+
+
+        &:empty {
+            margin-block: 0;
+        }
+
+
+        button {
+            cursor: pointer;
+            height: 3rem;
+
+            &.num-button {
+                aspect-ratio: 1;
+
+
+
+                &.active {
+                    font-weight: bold;
+                }
+            }
+        }
+
+
+    }
+
+}

@@ -78,7 +78,7 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
       }
     }
 
-    (await cookies()).set('WAIM_LOCALE' , 'en')
+    // (await cookies()).set('WAIM_LOCALE' , 'en')
 
 
     return next(request, event, async () => { });
