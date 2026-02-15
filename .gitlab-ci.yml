@@ -21,6 +21,7 @@ build-image:
     - echo "Building Docker Image..."
     - >
       docker build 
+      --build-arg CREPEN_NPM_AUTH_IDENT="$CREPEN_NPM_AUTH_IDENT"
       -t $WAIM_NEXUS_FULL_IMAGE:$CI_COMMIT_SHORT_SHA
       -t $WAIM_NEXUS_FULL_IMAGE:latest 
       -f apps/web/Dockerfile .
