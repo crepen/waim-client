@@ -128,7 +128,54 @@ export class ProjectApiProvider {
                 })
             })
 
-            let data: CommonPageableApiResponse | undefined = undefined;
+            let data: CommonApiResponse | undefined = undefined;
+
+            
+
+            try {
+                data = await res.json();
+            }
+            catch (e) {
+                /** empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                // throw new Error('Response not found.');
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message,
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+
+    static removeProject = async (projectUid : string ,  config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const apiUrl = new URL(`${process.env.WAIM_API_URL}/api/project/${projectUid}`);
+
+            const res = await fetch(apiUrl.toString(), {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                }
+            })
+
+            let data: CommonApiResponse | undefined = undefined;
 
             
 

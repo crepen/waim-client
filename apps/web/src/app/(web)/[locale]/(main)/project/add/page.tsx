@@ -9,15 +9,7 @@ const AddProjectPage = () => {
         >
             <AddProjectForm
                 className="add-project-form"
-            >
-                <div>
-                    <input type="text" name="project-name"></input>
-                </div>
-                <div>
-                    <input type="text" name="project-alias"></input>
-                </div>
-               
-            </AddProjectForm>
+            />
         </SubPageTemplate>
     )
 }

@@ -1,6 +1,8 @@
 import '../../../assets/styles/global/reset.css'
 import '../../../assets/styles/global/global.scss'
-import '@mantine/core/styles.css'; 
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css'
+import 'pretendard/dist/web/static/pretendard.css';
 import type { Metadata } from "next";
 import { PropsWithChildren } from "react";
 import { notFound } from 'next/navigation';
@@ -8,6 +10,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { I18nConfig } from '@root/module/i18n/i18n.config';
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
+import { Toaster } from 'sonner';
+import { GlobalLoadingProvider } from '@/components/page/main/global/GlobalLoadingProvider';
 
 
 export const metadata: Metadata = {
@@ -35,19 +39,26 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <ColorSchemeScript 
+        <ColorSchemeScript
           defaultColorScheme='light'
         />
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <MantineProvider 
-            theme={createTheme({scale : 1.6})}
+          <MantineProvider
+            theme={createTheme({ scale: 1.6 })}
             defaultColorScheme='light'
           >
-            <div id='root'>
-              {prop.children}
-            </div>
+            <GlobalLoadingProvider>
+              <Toaster />
+
+
+              <div id='root'>
+                {prop.children}
+              </div>
+
+
+            </GlobalLoadingProvider>
           </MantineProvider>
         </NextIntlClientProvider>
       </body>

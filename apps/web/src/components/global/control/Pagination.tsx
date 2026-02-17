@@ -1,24 +1,26 @@
 'use client'
 
 import { DomUtil } from "@crepen/util";
+import { Center, Pagination } from "@mantine/core";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 type BasePaginationProp = {
     className?: string;
     // totalElementCount : number;
-    totalPageCount : number;
-    currentPage : number;
-    maxButtonCount? : number;
-    
+    totalPageCount: number;
+    currentPage: number;
+    maxButtonCount?: number;
+
 }
 
-export const BasePagination = (prop : BasePaginationProp) => {
+export const BasePagination = (prop: BasePaginationProp) => {
 
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    
+
     const currentPage = prop.currentPage || 1;
 
     const MAX_BUTTONS = prop.maxButtonCount || 5;
@@ -33,35 +35,50 @@ export const BasePagination = (prop : BasePaginationProp) => {
 
     const handlePageChange = (pageNumber: number) => {
         const params = new URLSearchParams(searchParams.toString());
-        params.set('page', pageNumber.toString()); 
-        
+        params.set('page', pageNumber.toString());
+
         router.push(`${pathname}?${params.toString()}`);
     };
+    console.log(typeof prop.currentPage)
+
+    useEffect(() => {
+        console.log(prop.currentPage);
+    }, [prop.currentPage])
 
     return (
-        <div className={DomUtil.joinClassName("pagination" , prop.className)}>
-            {currentPage > 1 && (
-                <button onClick={() => handlePageChange(currentPage - 1)}>Prev</button>
-            )}
+        <Center>
+            <Pagination
+                total={prop.totalPageCount}
+                value={Number(prop.currentPage)}
+                onChange={handlePageChange}
+                siblings={5}
+                withEdges
+            />
+        </Center>
 
-            {prop.totalPageCount !== 1 &&  Array.from({ length: (endPage - startPage) + 1 }, (_, i) => startPage + i).map((p) => (
-                <button
-                    key={p}
-                    onClick={() => handlePageChange(p)}
-                    className={DomUtil.joinClassName(
-                        'num-button',
-                        Number(currentPage) === Number(p) ? 'active' : ''
-                    )}
-                >
-                    {p}
-                </button>
-                
-            ))}
+        // <div className={DomUtil.joinClassName("pagination" , prop.className)}>
+        //     {currentPage > 1 && (
+        //         <button onClick={() => handlePageChange(currentPage - 1)}>Prev</button>
+        //     )}
 
-            {currentPage < prop.totalPageCount && (
-                <button onClick={() => handlePageChange(Number(currentPage) + 1)}>Next</button>
-            )}
-        </div>
+        //     {prop.totalPageCount !== 1 &&  Array.from({ length: (endPage - startPage) + 1 }, (_, i) => startPage + i).map((p) => (
+        //         <button
+        //             key={p}
+        //             onClick={() => handlePageChange(p)}
+        //             className={DomUtil.joinClassName(
+        //                 'num-button',
+        //                 Number(currentPage) === Number(p) ? 'active' : ''
+        //             )}
+        //         >
+        //             {p}
+        //         </button>
+
+        //     ))}
+
+        //     {currentPage < prop.totalPageCount && (
+        //         <button onClick={() => handlePageChange(Number(currentPage) + 1)}>Next</button>
+        //     )}
+        // </div>
     )
 }
 
