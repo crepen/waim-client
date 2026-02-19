@@ -50,6 +50,9 @@ const ProjectMainPage = async (prop: ProjectMainPageProp) => {
                     <Title order={5}>
                         Projects
                     </Title>
+                    <Typography>
+                        Pros
+                    </Typography>
                 </Box>
             </MainContainerHeader>
             <MainContainerScrollContent>

@@ -2,7 +2,7 @@
 
 import authConfig from "@/config/auth/AuthConfig";
 import { AuthProvider } from "@crepen/auth";
-import { ActionIcon, Anchor, Box, Card, Flex, Grid, GridCol, Group, NavLink, SimpleGrid, Space, Title, Typography } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Card, Flex, Grid, GridCol, Group, NavLink, SimpleGrid, Space, Stack, Text, Title, Typography } from "@mantine/core";
 import { ProjectApiProvider } from "@waim/api";
 import { getLocale } from "next-intl/server";
 import type { ProjectData, CommonApiResult } from "@waim/api/types";
@@ -63,7 +63,9 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
                         <Box
                             flex={1}
                         >
-                            <ProjectDetailContent />
+                            <ProjectDetailContent
+                                data={resultData.data}
+                            />
                         </Box>
                     </TriggerOn>
                     <TriggerOff>
@@ -85,38 +87,129 @@ export default ProjectDetailPage;
 
 
 type ProjectDetailContentProps = {
-    data?: CommonApiResult<ProjectData>
+    data?: ProjectData
 }
 
 const ProjectDetailContent = (prop: ProjectDetailContentProps) => {
 
+    console.log(prop.data)
 
+    const data = {
+
+        'project_alias': prop.data?.project_alias,
+        'project_name': prop.data?.project_name,
+        'project_owner_name': prop.data?.project_owner_name,
+        'create_date': new Date(prop.data?.create_timestamp ?? 0).toString(),
+        'update_date': new Date(prop.data?.update_timestamp ?? 0).toString(),
+    }
 
     return (
-        <SimpleGrid
-            spacing={'md'}
-            px={10}
-            cols={3}
-        >
-            <Card
-                withBorder
-                shadow="md"
+        <Grid gutter={0}>
+            <GridCol
+                span={{ xl: 9, lg: 8, md: 8, sm: 6, xs: 12 }}
+                mb={'md'}
             >
-                1
-            </Card>
-            {/* <GitLabConnCard /> */}
-            <Card
-                withBorder
-                shadow="md"
-            >
-                1
-            </Card>
-            <Card
-                withBorder
-                shadow="md"
-            >
-                1
-            </Card>
-        </SimpleGrid>
+                <SimpleGrid
+                    spacing={'md'}
+                    px={10}
+                    cols={{ xl: 3, lg: 2 , md: 2, sm: 1, xs: 1 }}
+                >
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        1
+                    </Card>
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        1
+                    </Card>
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        1
+                    </Card>
+                </SimpleGrid>
+
+            </GridCol>
+            <GridCol span={{ xl: 3, lg: 4, md: 4, sm: 6, xs: 12 }}>
+                <Stack
+                    px={10}
+                    gap={'md'}
+                >
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        <Title order={6}>
+                            Project Info
+                        </Title>
+
+                        <Space h={10} />
+
+                        {
+                            Object.entries(data).map(([key, value]) => (
+                                <Group
+                                    key={key}
+                                    justify="space-between"
+                                    wrap="nowrap"
+                                >
+                                    <Text size={'sm'}>
+                                        {key.split('_').join(' ')}
+                                    </Text>
+                                    <Text size={'sm'}>
+                                        {value ?? '-'}
+                                    </Text>
+                                </Group>
+                            ))
+                        }
+
+
+
+                    </Card>
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        1
+                    </Card>
+                    <Card
+                        withBorder
+                        shadow="md"
+                    >
+                        1
+                    </Card>
+                </Stack>
+
+            </GridCol>
+        </Grid>
+        // <SimpleGrid
+        //     spacing={'md'}
+        //     px={10}
+        //     cols={3}
+        // >
+        //     <Card
+        //         withBorder
+        //         shadow="md"
+        //     >
+        //         1
+        //     </Card>
+        //     {/* <GitLabConnCard /> */}
+        //     <Card
+        //         withBorder
+        //         shadow="md"
+        //     >
+        //         1
+        //     </Card>
+        //     <Card
+        //         withBorder
+        //         shadow="md"
+        //     >
+        //         1
+        //     </Card>
+        // </SimpleGrid>
     )
 }
