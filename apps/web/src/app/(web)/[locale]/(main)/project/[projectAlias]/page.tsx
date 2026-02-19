@@ -1,16 +1,16 @@
 'use server'
 
-import { SubPageTemplate } from "@/components/page/main/global/SubPageTemplate";
 import authConfig from "@/config/auth/AuthConfig";
 import { AuthProvider } from "@crepen/auth";
-import { ActionIcon, Box, Card, Center, Flex, Grid, GridCol, Group, Text, Title } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Card, Flex, Grid, GridCol, Group, NavLink, SimpleGrid, Space, Title, Typography } from "@mantine/core";
 import { ProjectApiProvider } from "@waim/api";
 import { getLocale } from "next-intl/server";
 import type { ProjectData, CommonApiResult } from "@waim/api/types";
-import { VscDebugDisconnect } from "react-icons/vsc";
-import { IoSettingsOutline } from "react-icons/io5";
-import { UpdateGitLabIntegrationButton, UpdateGitLabIntegrationDrawer } from "@/components/page/main/project/detail/UpdateGitLabIntegration";
 import { GitLabConnCard } from "@/components/page/main/project/detail/GitLabConnCard";
+import { MainContainer, MainContainerHeader, MainContainerScrollContent } from "@/components/layout/common/page-container/PageContainer";
+import { TriggerOff, TriggerOn, TriggerProvider } from "@/components/global/provider/TriggerProvider";
+import { SlSettings } from "react-icons/sl";
+import Link from "next/link";
 
 type ProjectDetailPageProp = {
     params: Promise<{ projectAlias: string }>
@@ -36,24 +36,46 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
 
 
     return (
-        <SubPageTemplate
-            pageTitle={resultData.data?.project_name ?? "Project Detail"}
-            className="project-detail-page"
-        >
-            {
-                resultData.state === false &&
-                <Flex>
-                    {resultData.message}
-                </Flex>
-            }
+        <MainContainer>
+            <MainContainerHeader>
+                <Group justify="space-between">
+                    <Title order={5}>
+                        {resultData.data?.project_name ?? "Project Detail"}
+                    </Title>
 
+                    <ActionIcon
+                        variant="white"
+                        component={'a'}
+                        href={`/project/${param.projectAlias}/setting`}
+                    >
+                        <SlSettings />
+                    </ActionIcon>
+                </Group>
+            </MainContainerHeader>
+            <MainContainerScrollContent>
+                <Space h={10} />
 
-            {
-                resultData.state === true &&
-                <ProjectDetailContent />
-            }
+                <TriggerProvider
+                    isOn={resultData.state}
+                >
+                    <TriggerOn>
+                        {/* API SUCCESS */}
+                        <Box
+                            flex={1}
+                        >
+                            <ProjectDetailContent />
+                        </Box>
+                    </TriggerOn>
+                    <TriggerOff>
+                        {/* API ERROR */}
+                        <Flex>
+                            {resultData.message ?? 'Error Message'}
+                        </Flex>
+                    </TriggerOff>
+                </TriggerProvider>
+            </MainContainerScrollContent>
+        </MainContainer >
 
-        </SubPageTemplate>
     )
 }
 
@@ -71,32 +93,30 @@ const ProjectDetailContent = (prop: ProjectDetailContentProps) => {
 
 
     return (
-        <Box>
-            <Grid>
-                <GridCol span={8}>
-                    <Card
-                        withBorder
-                        shadow="md"
-                    >
-                        1
-                    </Card>
-                </GridCol>
-                <GridCol span={4}>
-                    <GitLabConnCard />
-                </GridCol>
-                <GridCol span={4}>
-                    <Card
-                        withBorder
-                        shadow="md"
-                    >
-                        1
-                    </Card>
-                </GridCol>
-            </Grid>
-
-
-
-            
-        </Box>
+        <SimpleGrid
+            spacing={'md'}
+            px={10}
+            cols={3}
+        >
+            <Card
+                withBorder
+                shadow="md"
+            >
+                1
+            </Card>
+            {/* <GitLabConnCard /> */}
+            <Card
+                withBorder
+                shadow="md"
+            >
+                1
+            </Card>
+            <Card
+                withBorder
+                shadow="md"
+            >
+                1
+            </Card>
+        </SimpleGrid>
     )
 }

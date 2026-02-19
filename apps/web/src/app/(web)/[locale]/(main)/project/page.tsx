@@ -1,20 +1,15 @@
 'use server'
 
 import '../../../../../assets/styles/pages/project/project.main.page.scss'
-import { BaseTable, } from "@/components/global/control/BaseTable";
 import { BasePagination } from '@/components/global/control/Pagination';
-import { SubPageTemplate } from "@/components/page/main/global/SubPageTemplate";
+import { MainContainer, MainContainerHeader, MainContainerScrollContent } from '@/components/layout/common/page-container/PageContainer';
 import { ProjectListRaw } from '@/components/page/main/project/ProjectListRaw';
-import { SearchProjectBox } from '@/components/page/main/project/SearchProjectBox';
 import { SearchProjectHeader } from '@/components/page/main/project/SearchProjectHeader';
 import authConfig from "@/config/auth/AuthConfig";
 import { AuthProvider } from "@crepen/auth";
-import { Badge, Box, Card, Center, Divider, Grid, Group, Pagination, Space, Text, Typography } from '@mantine/core';
+import { Box, Center, Divider, Space, Title, Typography } from '@mantine/core';
 import { ProjectApiProvider } from '@waim/api'
 import { getLocale } from "next-intl/server";
-import Image from 'next/image';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 type ProjectMainPageProp = {
     searchParams: Promise<{ page?: number, keyword?: string }>
@@ -49,59 +44,64 @@ const ProjectMainPage = async (prop: ProjectMainPageProp) => {
 
 
     return (
-        <SubPageTemplate
-            pageTitle="Projects"
-            className="project-page"
-        >
+        <MainContainer>
+            <MainContainerHeader>
+                <Box>
+                    <Title order={5}>
+                        Projects
+                    </Title>
+                </Box>
+            </MainContainerHeader>
+            <MainContainerScrollContent>
+                <Space h={10} />
+                <SearchProjectHeader
+                    search={{
+                        defaultKeyword: searchParam.keyword
+                    }}
+                />
 
-            <SearchProjectHeader
-                search={{
-                    defaultKeyword: searchParam.keyword
-                }}
-            />
+                <Space h={20} />
 
-            <Space h={20} />
+                <Divider />
 
+                <Space h={20} />
+                <div className="">
+                    {
+                        (resultData.data ?? []).map(project => (
+                            <ProjectListRaw
+                                key={project.uid}
+                                projectAlias={project.project_alias}
+                                projectName={project.project_name}
+                                projectOwnerName={project.project_owner_name}
+                                projectUid={project.uid}
+                            />
+                        ))
+                    }
+                    {
+                        (resultData.data ?? []).length === 0 &&
+                        <Box>
+                            <Center
+                                mt={100}
+                            >
+                                <Typography>
+                                    데이터가 없습니다.
+                                </Typography>
+                            </Center>
+                        </Box>
+                    }
+                </div>
 
-            <Divider />
+                <Space h={40} />
 
-            <Space h={20} />
-            <div className="">
-                {
-                    (resultData.data ?? []).map(project => (
-                        <ProjectListRaw
-                            key={project.uid}
-                            projectAlias={project.project_alias}
-                            projectName={project.project_name}
-                            projectOwnerName={project.project_owner_name}
-                            projectUid={project.uid}
-                        />
-                    ))
-                }
-                {
-                    (resultData.data ?? []).length === 0 &&
-                    <Box>
-                        <Center
-                            mt={100}
-                        >
-                            <Typography>
-                                데이터가 없습니다.
-                            </Typography>
-                        </Center>
-                    </Box>
-                }
-            </div>
+                <BasePagination
+                    className='project-list-pagination'
+                    currentPage={searchParam.page ?? 1}
+                    totalPageCount={resultData.pageable?.total_page ?? 1}
+                    maxButtonCount={5}
+                />
+            </MainContainerScrollContent>
+        </MainContainer>
 
-            <Space h={40} />    
-
-            <BasePagination
-                className='project-list-pagination'
-                currentPage={searchParam.page ?? 1}
-                totalPageCount={resultData.pageable?.total_page ?? 1}
-                maxButtonCount={5}
-            />
-
-        </SubPageTemplate>
     )
 }
 

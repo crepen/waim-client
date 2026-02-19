@@ -1,0 +1,33 @@
+:root {
+    --crp-w-h: 100vh;
+    --crp-hd-h: 0px;
+}
+
+.crp-layout {
+
+    display: grid;
+    grid-template-areas:
+        'crp-header crp-header'
+        'crp-nav crp-content'
+    ;
+
+    grid-template-columns: auto 1fr;
+
+    height: var(--crp-wh);
+
+    .crp-layout-header {
+        grid-area: crp-header;
+    }
+
+    .crp-layout-content {
+        grid-area: crp-content;
+        overflow: hidden;
+        height: calc(var(--crp-w-h) - var(--crp-hd-h));
+    }
+
+    .crp-layout-nav {
+        grid-area: crp-nav;
+        width: fit-content;
+        height: calc(var(--crp-w-h) - var(--crp-hd-h));
+    }
+}

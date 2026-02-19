@@ -22,10 +22,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@crepen/util@npm:1.0.1-beta1":
-  version: 1.0.1-beta1
-  resolution: "@crepen/util@npm:1.0.1-beta1::__archiveUrl=http%3A%2F%2Fnexus.crepen.kro.kr%2Frepository%2Fcrepen-npm-group%2F%40crepen%2Futil%2F-%2Futil-1.0.1-beta1.tgz"
-  checksum: 10c0/1263231a07a52f286953ca93084183b8a521f2cd68f9c98ed781183f1fe398794acaf341ffadb12b70e1ce0333c3a01312ec13e50be995aaced8e53a48096fe9
+"@crepen/util@npm:1.0.1-beta2":
+  version: 1.0.1-beta2
+  resolution: "@crepen/util@npm:1.0.1-beta2::__archiveUrl=http%3A%2F%2Fnexus.crepen.kro.kr%2Frepository%2Fcrepen-npm-group%2F%40crepen%2Futil%2F-%2Futil-1.0.1-beta2.tgz"
+  checksum: 10c0/333568f653b61ddf3878bde794e7dffa5dc195488795ea315c583403a7de7c32bd6ae6ed6e3e9d48cd926028281fb0256ad7fed378a2eea9ee7ac8b8a08672c0
   languageName: node
   linkType: hard
 
@@ -1300,7 +1300,7 @@ __metadata:
   resolution: "@waim/client@workspace:apps/web"
   dependencies:
     "@crepen/auth": "npm:1.0.3-beta23"
-    "@crepen/util": "npm:1.0.1-beta1"
+    "@crepen/util": "npm:1.0.1-beta2"
     "@mantine/core": "npm:^8.3.14"
     "@mantine/dates": "npm:^8.3.15"
     "@mantine/hooks": "npm:^8.3.14"

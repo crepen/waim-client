@@ -12,6 +12,7 @@ import { I18nConfig } from '@root/module/i18n/i18n.config';
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 import { Toaster } from 'sonner';
 import { GlobalLoadingProvider } from '@/components/page/main/global/GlobalLoadingProvider';
+import { GlobalHeightProvider } from '@/components/global/provider/HeightProvider';
 
 
 export const metadata: Metadata = {
@@ -49,16 +50,20 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
             theme={createTheme({ scale: 1.6 })}
             defaultColorScheme='light'
           >
-            <GlobalLoadingProvider>
-              <Toaster />
+            {/* <GlobalHeightProvider
+              customPropertyName='crp-window-height'
+            > */}
+              <GlobalLoadingProvider>
+                <Toaster />
 
 
-              <div id='root'>
-                {prop.children}
-              </div>
+                <div id='root'>
+                  {prop.children}
+                </div>
 
 
-            </GlobalLoadingProvider>
+              </GlobalLoadingProvider>
+            {/* </GlobalHeightProvider> */}
           </MantineProvider>
         </NextIntlClientProvider>
       </body>

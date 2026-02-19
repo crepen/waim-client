@@ -1,0 +1,13 @@
+.crp-main-container{
+
+ 
+
+    .crp-main-container-header{
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+
+    .crp-main-container-content{
+        height: calc(var(--crp-mch) - var(--crp-mchh));
+    }
+}
