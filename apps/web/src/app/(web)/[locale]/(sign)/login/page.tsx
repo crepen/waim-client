@@ -7,7 +7,7 @@ const LoginPage = async () => {
         <div className="section-box sign-in-page">
             <div className="section-title">
                 <h1>WAIM</h1>
-                <span>Web Access Information Management</span>
+                <p>Web Access Information Management</p>
             </div>
             <div className='sign-in-form'>
                 <LoginForm />

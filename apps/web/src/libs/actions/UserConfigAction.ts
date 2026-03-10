@@ -3,7 +3,8 @@
 import authConfig from "@/config/auth/AuthConfig";
 import { AuthProvider } from "@crepen/auth";
 import { UserApiProvider } from "@waim/api";
-import { getLocale } from "next-intl/server";
+import { cookies } from "next/headers";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export const UserConfigAction = async (key: string, value: string) => {
 
@@ -19,6 +20,15 @@ export const UserConfigAction = async (key: string, value: string) => {
             token: sessionData?.token?.accessToken ?? ""
         })
 
+        if (updateConfigRes.state === true && key === 'SITE_LANGUAGE') {
+            const normalized = value?.toLowerCase() === 'en' ? 'en' : 'ko';
+            const cookieStore = await cookies();
+            cookieStore.set('NEXT_LOCALE', normalized, {
+                path: '/',
+                sameSite: 'lax'
+            });
+        }
+
 
         return {
             state: updateConfigRes.state,
@@ -26,9 +36,10 @@ export const UserConfigAction = async (key: string, value: string) => {
         }
     }
     catch (e) {
+        const t = await getTranslations();
         return {
             state: false,
-            message: 'Server connect failed.'
+            message: t('auth.default_error_message')
         }
     }
 

@@ -3,15 +3,14 @@ import authConfig from '@/config/auth/AuthConfig';
 import { AuthProvider } from '@crepen/auth';
 import { AuthApiProvider } from '@waim/api';
 import { ProfileMenuButton } from '@/components/layout/common/crp-layout/ProfileMenuButton';
+import { MainSideNavMenu } from '@/components/layout/common/crp-layout/MainSideNavMenu';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { PropsWithChildren } from "react";
 import { CrpLayout, CrpLayoutContent, CrpLayoutHeader, CrpLayoutNav } from '@/components/layout/common/crp-layout/CrpLayout';
-import { Anchor, Box, Group, NavLink, Text, Title } from '@mantine/core';
+import { Anchor, Group, Title } from '@mantine/core';
 
 const MainLayoutRoute = async (prop: PropsWithChildren) => {
     const locale = await getLocale();
-    const t = await getTranslations('main.layout');
-
     const session = await AuthProvider
         .setConfig(authConfig(locale, ''))
         .getSession();
@@ -48,12 +47,7 @@ const MainLayoutRoute = async (prop: PropsWithChildren) => {
             <CrpLayoutNav
                 className='main-layout-nav'
             >
-                <Box className='menu-list'>
-                    <Text className='menu-title'>{t('management')}</Text>
-                    <NavLink label={t('control_center')} href="/" />
-                    <NavLink label={t('groups')} href="/group" />
-                    <NavLink label={t('projects')} href="/project" />
-                </Box>
+                <MainSideNavMenu isAdmin={isAdmin} />
             </CrpLayoutNav>
             <CrpLayoutContent
                 className='main-layout-content'

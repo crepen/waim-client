@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "waim-client",
+      "path": "."
+    },
+    {
+      "name": "waim-was",
+      "path": "../waim-was"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.turbo": true
+    }
+  }
+}
