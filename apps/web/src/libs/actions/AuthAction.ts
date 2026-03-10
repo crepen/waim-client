@@ -31,6 +31,9 @@ export const LoginAction = async (formData: FormData) => {
 
             UserConfigureProvider.setConfigure(userConfigRes.data ?? []);
         }
+        else{
+            console.error("Login failed:", signInResult);
+        }
 
         return {
             state: signInResult.state,
