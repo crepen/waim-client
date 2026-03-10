@@ -1,42 +1,56 @@
 #root .main-layout {
     .main-layout-header {
-        padding: 1.4rem 2.4rem;
-        border-bottom: 1px solid #d6dee3;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(238, 247, 246, 0.92) 100%);
-        backdrop-filter: blur(6px);
+        padding: 12px 20px;
+        border-bottom: 1px solid #d8dee8;
+        background: #ffffff;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
     }
 
     .main-layout-nav {
-        border-right: 1px solid #d6dee3;
-        background: linear-gradient(180deg, #f7fbfb 0%, #eef5f4 100%);
+        width: 248px;
+        border-right: 1px solid #d8dee8;
+        background-color: #ffffff;
 
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: flex-start;
         flex-direction: column;
 
         .menu-list {
             width: 100%;
             flex-grow: 1;
-            padding: 1.4rem 1rem;
+            padding: 12px 10px;
 
             .menu-title {
-                font-size: 1.1rem;
+                font-size: 11px;
                 font-weight: 700;
-                color: #4b5563;
+                color: #5f6b7d;
                 text-transform: uppercase;
-                letter-spacing: 0.14em;
-                padding: 0.6rem 1rem;
+                letter-spacing: 0.08em;
+                padding: 4px 10px;
             }
 
             .mantine-NavLink-root {
-                margin-bottom: 0.4rem;
-                background: transparent;
-                color: #0f172a;
+                margin-bottom: 4px;
             }
 
             .mantine-NavLink-root:hover {
-                background: #d9f3ef;
+                background: #edf3ff;
+            }
+        }
+
+        .action-list {
+            width: 100%;
+            flex-grow: 0;
+            padding: 8px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+            .menu-title.secondary {
+                font-size: 10px;
+                color: #8a95a6;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                padding: 4px 10px;
             }
         }
     }
@@ -48,56 +62,13 @@
             height: 100%;
 
             .crp-main-container-header{
-                padding: 1.8rem 2.4rem 1.4rem;
-                border-bottom: 1px solid #dce5ea;
-                background: rgba(255, 255, 255, 0.74);
-                backdrop-filter: blur(8px);
+                padding: 16px 20px;
+                border-bottom: 1px solid #e3e8f1;
+                background: rgba(255, 255, 255, 0.9);
             }
 
             .crp-main-container-content{
-                padding: 1.6rem 2rem 2rem;
-            }
-        }
-    }
-}
-
-@media (max-width: 1024px) {
-    #root .main-layout {
-        .main-layout-header {
-            padding: 1.2rem 1.4rem;
-        }
-
-        .main-layout-nav {
-            border-right: 0;
-            border-bottom: 1px solid #d6dee3;
-
-            .menu-list {
-                display: flex;
-                align-items: center;
-                gap: 0.4rem;
-                overflow-x: auto;
-                padding: 1rem;
-
-                .menu-title {
-                    display: none;
-                }
-
-                .mantine-NavLink-root {
-                    white-space: nowrap;
-                    margin-bottom: 0;
-                }
-            }
-        }
-
-        .main-layout-content {
-            .crp-main-container {
-                .crp-main-container-header {
-                    padding: 1.2rem 1.4rem 1rem;
-                }
-
-                .crp-main-container-content {
-                    padding: 1.2rem;
-                }
+                padding-inline: 12px;
             }
         }
     }

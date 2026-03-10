@@ -4,99 +4,24 @@
 
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
-    overflow: hidden;
+    align-items: flex-start;
 
     .split-section {
+
         height: 100%;
 
         &.signin-image-section {
-            flex: 1 1 62%;
-            background:
-                radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.24), transparent 24%),
-                radial-gradient(circle at 78% 88%, rgba(13, 148, 136, 0.34), transparent 40%),
-                linear-gradient(140deg, #0f172a 0%, #115e59 52%, #1f2937 100%);
-            position: relative;
-
-            .signin-hero {
-                position: absolute;
-                left: 8%;
-                top: 12%;
-                max-width: 56rem;
-                color: #ecfeff;
-
-                h1 {
-                    margin-top: 1.8rem;
-                    margin-bottom: 1.2rem;
-                    font-size: clamp(3.2rem, 4.8vw, 5.4rem);
-                    line-height: 1.08;
-                    letter-spacing: -0.02em;
-                }
-
-                p {
-                    margin: 0;
-                    font-size: clamp(1.6rem, 1.8vw, 2rem);
-                    line-height: 1.5;
-                    color: rgba(236, 254, 255, 0.9);
-                }
-            }
+            flex: 1 1 70%;
+            background-color: #192037;
         }
 
         &.signin-form-section {
-            flex : 1 1 38%;
+            
+            flex : 1 1 30%;
             display: grid;
             place-items: center;
-            background:
-                linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(237, 245, 244, 0.94) 100%);
 
-            .signin-form-shell {
-                width: min(46rem, 92%);
-                animation: signin-rise 480ms ease-out;
-            }
+            min-width: 50rem;
         }
-    }
-}
-
-@media (max-width: 1024px) {
-    .layout.layout-signin {
-        flex-direction: column;
-
-        .split-section {
-            &.signin-image-section {
-                flex: 0 0 auto;
-                min-height: 30%;
-
-                .signin-hero {
-                    position: static;
-                    padding: 2.4rem 2rem;
-
-                    h1 {
-                        font-size: clamp(2.8rem, 7vw, 3.8rem);
-                    }
-                }
-            }
-
-            &.signin-form-section {
-                flex: 1;
-                min-width: 0;
-                padding: 2rem 0;
-
-                .signin-form-shell {
-                    width: min(52rem, 92%);
-                }
-            }
-        }
-    }
-}
-
-@keyframes signin-rise {
-    from {
-        opacity: 0;
-        transform: translateY(2rem);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
     }
 }

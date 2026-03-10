@@ -2,7 +2,7 @@
 import './crp-layout.scss';
 
 import { DomUtil } from '@crepen/util';
-import { Box } from "@mantine/core";
+import { Box, ScrollArea } from "@mantine/core";
 import { createContext, PropsWithChildren, useContext, useLayoutEffect, useRef, useState } from "react";
 
 type CrpLayoutContextType = {
@@ -31,6 +31,8 @@ export const CrpLayout = (prop: CrpLayoutProps) => {
     const [navElement, setNavElement] = useState<HTMLElement | null>(null);
 
     useLayoutEffect(() => {
+
+        console.log("Layout useLayoutEffect");
 
         const detectWindowHeight = () => {
             if (!layoutRef.current) {

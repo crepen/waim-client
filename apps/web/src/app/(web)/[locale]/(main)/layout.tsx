@@ -6,7 +6,7 @@ import { ProfileMenuButton } from '@/components/layout/common/crp-layout/Profile
 import { getLocale, getTranslations } from 'next-intl/server';
 import { PropsWithChildren } from "react";
 import { CrpLayout, CrpLayoutContent, CrpLayoutHeader, CrpLayoutNav } from '@/components/layout/common/crp-layout/CrpLayout';
-import { Anchor, Badge, Box, Group, NavLink, Stack, Text, Title } from '@mantine/core';
+import { Anchor, Box, Group, NavLink, Text, Title } from '@mantine/core';
 
 const MainLayoutRoute = async (prop: PropsWithChildren) => {
     const locale = await getLocale();
@@ -24,7 +24,6 @@ const MainLayoutRoute = async (prop: PropsWithChildren) => {
     const roles = userInfoRes.data?.roles ?? session?.user?.roles ?? [];
     const isAdmin = roles.some((role) => role.toLowerCase().includes('admin'));
     const profileName = userInfoRes.data?.name ?? session?.user?.name ?? 'User';
-    const localeBasePath = `/${locale}`;
 
 
     return (
@@ -34,37 +33,27 @@ const MainLayoutRoute = async (prop: PropsWithChildren) => {
             <CrpLayoutHeader
                 className='main-layout-header'
             >
-                <Group justify='space-between' wrap='nowrap'>
-                    <Group gap='sm'>
-                        <Anchor href={localeBasePath} c='inherit' underline='never'>
-                            <Title order={4}>WAIM</Title>
-                        </Anchor>
-                        <Badge variant='light' color='teal'>
-                            WORKSPACE
-                        </Badge>
-                    </Group>
+                <Group justify='space-between'>
+                    <Anchor href="/">
+                        <Title order={4}>WAIM</Title>
+                    </Anchor>
 
-                    <Group gap='md'>
-                        <Text size='sm' c='dimmed'>
-                            Web Access Information Management
-                        </Text>
-
-                        <ProfileMenuButton
-                            profileName={profileName}
-                            isAdmin={isAdmin}
-                        />
-                    </Group>
+                    <ProfileMenuButton
+                        profileName={profileName}
+                        isAdmin={isAdmin}
+                    />
                 </Group>
+
             </CrpLayoutHeader>
             <CrpLayoutNav
                 className='main-layout-nav'
             >
-                <Stack className='menu-list' gap='xs'>
+                <Box className='menu-list'>
                     <Text className='menu-title'>{t('management')}</Text>
-                    <NavLink label={t('control_center')} href={localeBasePath} />
-                    <NavLink label={t('groups')} href={`${localeBasePath}/group`} />
-                    <NavLink label={t('projects')} href={`${localeBasePath}/project`} />
-                </Stack>
+                    <NavLink label={t('control_center')} href="/" />
+                    <NavLink label={t('groups')} href="/group" />
+                    <NavLink label={t('projects')} href="/project" />
+                </Box>
             </CrpLayoutNav>
             <CrpLayoutContent
                 className='main-layout-content'
