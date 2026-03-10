@@ -8,6 +8,13 @@
 			"password_placeholder": "Enter your password",
 			"loading": "Signing in...",
 			"login_helper": "Sign in with the account provided by your administrator."
+		},
+		"notfound": {
+			"title": "Page not found",
+			"description": "The page you requested may have been moved or deleted.",
+			"to_previous": "Go to previous page",
+			"to_login": "Go to login",
+			"to_home": "Go to home"
 		}
 	},
 	"auth": {

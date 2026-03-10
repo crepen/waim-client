@@ -8,6 +8,13 @@
             "password_placeholder": "비밀번호를 입력하세요",
             "loading": "로그인 중...",
             "login_helper": "관리자에게 발급받은 계정으로 로그인하세요."
+        },
+        "notfound": {
+            "title": "페이지를 찾을 수 없습니다",
+            "description": "요청하신 페이지가 이동되었거나 삭제되었습니다.",
+            "to_previous": "이전 페이지로 이동",
+            "to_login": "로그인 페이지로 이동",
+            "to_home": "홈으로 이동"
         }
     },
     "auth": {

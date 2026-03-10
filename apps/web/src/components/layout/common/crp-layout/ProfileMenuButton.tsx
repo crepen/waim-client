@@ -29,9 +29,6 @@ export const ProfileMenuButton = ({ profileName, isAdmin }: ProfileMenuButtonPro
 				<Menu.Item component='a' href='/profile'>
 					{t('profile')}
 				</Menu.Item>
-				<Menu.Item component='a' href='/settings'>
-					{t('settings')}
-				</Menu.Item>
 				<Menu.Divider />
 				<Menu.Item component='a' href='/logout' color='red'>
 					{t('logout')}

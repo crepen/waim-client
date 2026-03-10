@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { I18nConfig } from '@root/module/i18n/i18n.config';
-import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
+import { createTheme, MantineProvider } from '@mantine/core';
 import { Toaster } from 'sonner';
 import { GlobalLoadingProvider } from '@/components/page/main/global/GlobalLoadingProvider';
 import { GlobalHeightProvider } from '@/components/global/provider/HeightProvider';
@@ -74,33 +74,24 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
   });
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        <ColorSchemeScript
-          defaultColorScheme='light'
-        />
-      </head>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          <MantineProvider
-            theme={materialTheme}
-            defaultColorScheme='light'
-          >
-            {/* <GlobalHeightProvider
-              customPropertyName='crp-window-height'
-            > */}
-              <GlobalLoadingProvider>
-                <Toaster />
+    <NextIntlClientProvider messages={messages}>
+      <MantineProvider
+        theme={materialTheme}
+        defaultColorScheme='light'
+      >
+        {/* <GlobalHeightProvider
+          customPropertyName='crp-window-height'
+        > */}
+          <GlobalLoadingProvider>
+            <Toaster />
 
-                <div id='root'>
-                  {prop.children}
-                </div>
-              </GlobalLoadingProvider>
-            {/* </GlobalHeightProvider> */}
-          </MantineProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+            <div id='root'>
+              {prop.children}
+            </div>
+          </GlobalLoadingProvider>
+        {/* </GlobalHeightProvider> */}
+      </MantineProvider>
+    </NextIntlClientProvider>
   );
 }
 

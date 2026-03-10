@@ -1,7 +1,7 @@
 import { MainContainer, MainContainerHeader, MainContainerScrollContent } from '@/components/layout/common/page-container/PageContainer';
 import authConfig from '@/config/auth/AuthConfig';
 import { AuthProvider } from '@crepen/auth';
-import { Badge, Box, Button, Card, Divider, Flex, Group, NativeSelect, Space, Stack, Text, TextInput, ThemeIcon, Title } from '@mantine/core';
+import { Badge, Box, Button, Card, Flex, Group, NativeSelect, Space, Stack, Text, TextInput, ThemeIcon, Title } from '@mantine/core';
 import { UserApiProvider } from '@waim/api';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
@@ -102,11 +102,13 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                                         <TextInput
                                             name='keyword'
                                             w={320}
+                                            size='md'
                                             placeholder={t('search_keyword_placeholder')}
                                             defaultValue={keyword}
                                         />
                                         <NativeSelect
                                             name='status'
+                                            size='md'
                                             defaultValue={status}
                                             data={[
                                                 { value: '', label: t('status_all') },
@@ -115,7 +117,7 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                                                 { value: 'BLOCK', label: 'BLOCK' }
                                             ]}
                                         />
-                                        <Button type='submit' size='xs' variant='light'>
+                                        <Button type='submit' size='md' variant='light'>
                                             {t('search_button')}
                                         </Button>
                                     </Group>
@@ -123,7 +125,7 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                                         <Text size='sm' c='dimmed'>
                                             {t('user_count', { count: userRes.pageable?.total_element ?? 0 })}
                                         </Text>
-                                        <Button component='a' href={`/${locale}/admin/users/add`} size='xs'>
+                                        <Button component='a' href={`/${locale}/admin/users/add`} size='md'>
                                             {t('user_add_button')}
                                         </Button>
                                     </Group>
@@ -132,12 +134,7 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                         </Card>
 
                         <Card withBorder>
-                            <Text fw={700}>{t('user_list_title')}</Text>
-                            <Text size='sm' c='dimmed'>{t('users_desc')}</Text>
-
-                            <Space h='md' />
-                            <Divider />
-                            <Space h='md' />
+                            <Space h='xs' />
 
                             <Stack gap='xs'>
                                 {rows.length > 0
