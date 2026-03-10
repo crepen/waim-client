@@ -37,37 +37,49 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
   }
 
   const materialTheme = createTheme({
-    scale: 1.6,
-    primaryColor: 'blue',
+    scale: 1,
+    primaryColor: 'teal',
     defaultRadius: 'md',
     fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',
     headings: {
       fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',
-      fontWeight: '600'
+      fontWeight: '700'
     },
     shadows: {
-      xs: '0 1px 3px rgba(0, 0, 0, 0.16)',
-      sm: '0 2px 6px rgba(0, 0, 0, 0.16)',
-      md: '0 4px 12px rgba(0, 0, 0, 0.18)',
-      lg: '0 8px 20px rgba(0, 0, 0, 0.18)',
-      xl: '0 12px 28px rgba(0, 0, 0, 0.22)'
+      xs: '0 1px 2px rgba(15, 23, 42, 0.08)',
+      sm: '0 6px 16px rgba(15, 23, 42, 0.08)',
+      md: '0 12px 30px rgba(15, 23, 42, 0.12)',
+      lg: '0 18px 40px rgba(15, 23, 42, 0.15)',
+      xl: '0 24px 54px rgba(15, 23, 42, 0.2)'
     },
     components: {
       Button: {
+        defaultProps: {
+          radius: 'md',
+          fw: 600
+        }
+      },
+      TextInput: {
+        defaultProps: {
+          radius: 'md'
+        }
+      },
+      PasswordInput: {
         defaultProps: {
           radius: 'md'
         }
       },
       Card: {
         defaultProps: {
-          radius: 'md',
-          shadow: 'xs'
+          radius: 'lg',
+          shadow: 'sm'
         }
       },
       NavLink: {
         defaultProps: {
-          variant: 'light',
-          radius: 'md'
+          variant: 'filled',
+          radius: 'md',
+          color: 'teal'
         }
       }
     }
