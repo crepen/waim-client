@@ -2,15 +2,13 @@
 
 import authConfig from "@/config/auth/AuthConfig";
 import { AuthProvider } from "@crepen/auth";
-import { ActionIcon, Anchor, Box, Card, Flex, Grid, GridCol, Group, NavLink, SimpleGrid, Space, Stack, Text, Title, Typography } from "@mantine/core";
+import { ActionIcon, Box, Card, Flex, Grid, GridCol, Group, SimpleGrid, Space, Stack, Text, Title } from "@mantine/core";
 import { ProjectApiProvider } from "@waim/api";
-import { getLocale } from "next-intl/server";
-import type { ProjectData, CommonApiResult } from "@waim/api/types";
-import { GitLabConnCard } from "@/components/page/main/project/detail/GitLabConnCard";
+import { getLocale, getTranslations } from "next-intl/server";
+import type { ProjectData } from "@waim/api/types";
 import { MainContainer, MainContainerHeader, MainContainerScrollContent } from "@/components/layout/common/page-container/PageContainer";
 import { TriggerOff, TriggerOn, TriggerProvider } from "@/components/global/provider/TriggerProvider";
 import { SlSettings } from "react-icons/sl";
-import Link from "next/link";
 
 type ProjectDetailPageProp = {
     params: Promise<{ projectAlias: string }>
@@ -19,6 +17,7 @@ type ProjectDetailPageProp = {
 const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
     const param = await prop.params;
     const locale = await getLocale();
+    const t = await getTranslations('main.project');
 
     const session = await AuthProvider.setConfig(
         authConfig(locale, '')
@@ -26,7 +25,6 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
 
 
     const resultData = await ProjectApiProvider.getProjectDetail(
-        (session?.user?.id ?? ""),
         param.projectAlias,
         {
             locale: locale,
@@ -40,13 +38,13 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
             <MainContainerHeader>
                 <Group justify="space-between">
                     <Title order={5}>
-                        {resultData.data?.project_name ?? "Project Detail"}
+                        {resultData.data?.project_name ?? t('detail_fallback_title')}
                     </Title>
 
                     <ActionIcon
                         variant="white"
                         component={'a'}
-                        href={`/project/${param.projectAlias}/setting`}
+                        href={`/project/${param.projectAlias}/setting?project_alias=${encodeURIComponent(param.projectAlias)}`}
                     >
                         <SlSettings />
                     </ActionIcon>
@@ -65,13 +63,14 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
                         >
                             <ProjectDetailContent
                                 data={resultData.data}
+                                t={t}
                             />
                         </Box>
                     </TriggerOn>
                     <TriggerOff>
                         {/* API ERROR */}
                         <Flex>
-                            {resultData.message ?? 'Error Message'}
+                            {resultData.message ?? t('api_list_error')}
                         </Flex>
                     </TriggerOff>
                 </TriggerProvider>
@@ -87,20 +86,17 @@ export default ProjectDetailPage;
 
 
 type ProjectDetailContentProps = {
-    data?: ProjectData
+    data?: ProjectData;
+    t: Awaited<ReturnType<typeof getTranslations>>;
 }
 
 const ProjectDetailContent = (prop: ProjectDetailContentProps) => {
-
-    console.log(prop.data)
-
     const data = {
-
-        'project_alias': prop.data?.project_alias,
-        'project_name': prop.data?.project_name,
-        'project_owner_name': prop.data?.project_owner_name,
-        'create_date': new Date(prop.data?.create_timestamp ?? 0).toString(),
-        'update_date': new Date(prop.data?.update_timestamp ?? 0).toString(),
+        [prop.t('detail_project_alias')]: prop.data?.project_alias,
+        [prop.t('detail_project_name')]: prop.data?.project_name,
+        [prop.t('detail_project_owner')]: prop.data?.project_owner_name,
+        [prop.t('detail_create_date')]: new Date(prop.data?.create_timestamp ?? 0).toString(),
+        [prop.t('detail_update_date')]: new Date(prop.data?.update_timestamp ?? 0).toString(),
     }
 
     return (
@@ -144,21 +140,19 @@ const ProjectDetailContent = (prop: ProjectDetailContentProps) => {
                         withBorder
                         shadow="md"
                     >
-                        <Title order={6}>
-                            Project Info
-                        </Title>
+                        <Title order={6}>{prop.t('detail_info_title')}</Title>
 
                         <Space h={10} />
 
                         {
-                            Object.entries(data).map(([key, value]) => (
+                            Object.entries(data).map(([label, value]) => (
                                 <Group
-                                    key={key}
+                                    key={label}
                                     justify="space-between"
                                     wrap="nowrap"
                                 >
                                     <Text size={'sm'}>
-                                        {key.split('_').join(' ')}
+                                        {label}
                                     </Text>
                                     <Text size={'sm'}>
                                         {value ?? '-'}

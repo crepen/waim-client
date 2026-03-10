@@ -27,10 +27,9 @@ export class UserApiProvider {
 
 
             if (!res.ok || data === undefined) {
-                // throw new Error('Response not found.');
                 return {
                     state: false,
-                    message: 'Server connect failed.'
+                    message: data?.message ?? 'Server connect failed.'
                 }
             }
 
@@ -78,10 +77,9 @@ export class UserApiProvider {
 
 
             if (!res.ok || data === undefined) {
-                // throw new Error('Response not found.');
                 return {
                     state: false,
-                    message: 'Server connect failed.'
+                    message: data?.message ?? 'Server connect failed.'
                 }
             }
 

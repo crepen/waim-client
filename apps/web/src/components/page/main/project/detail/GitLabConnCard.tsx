@@ -3,10 +3,11 @@
 import { Box, Card, Center, Group, Text, Title } from "@mantine/core"
 import { UpdateGitLabIntegrationButton, UpdateGitLabIntegrationDrawer } from "./UpdateGitLabIntegration"
 import { VscDebugDisconnect } from "react-icons/vsc"
-import { useState } from "react"
 import { useDisclosure } from "@mantine/hooks"
+import { useTranslations } from "next-intl"
 
 export const GitLabConnCard = () => {
+    const t = useTranslations('main.project');
 
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -21,7 +22,7 @@ export const GitLabConnCard = () => {
                 justify="space-between"
             >
                 <Title order={5}>
-                    Source Repository
+                    {t('source_repository')}
                 </Title>
                 <UpdateGitLabIntegrationButton
                     onClick={open}
@@ -40,7 +41,7 @@ export const GitLabConnCard = () => {
                         size={40}
                     />
                     <Text>
-                        DISCONNECT
+                        {t('disconnect')}
                     </Text>
                 </Box>
             </Center>

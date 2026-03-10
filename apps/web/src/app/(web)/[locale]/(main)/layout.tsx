@@ -1,9 +1,29 @@
 import '../../../../assets/styles/layout/main.layout.scss';
+import authConfig from '@/config/auth/AuthConfig';
+import { AuthProvider } from '@crepen/auth';
+import { AuthApiProvider } from '@waim/api';
+import { ProfileMenuButton } from '@/components/layout/common/crp-layout/ProfileMenuButton';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { PropsWithChildren } from "react";
 import { CrpLayout, CrpLayoutContent, CrpLayoutHeader, CrpLayoutNav } from '@/components/layout/common/crp-layout/CrpLayout';
-import { Anchor, Box, NavLink, Title } from '@mantine/core';
+import { Anchor, Box, Group, NavLink, Text, Title } from '@mantine/core';
 
-const MainLayoutRoute = (prop: PropsWithChildren) => {
+const MainLayoutRoute = async (prop: PropsWithChildren) => {
+    const locale = await getLocale();
+    const t = await getTranslations('main.layout');
+
+    const session = await AuthProvider
+        .setConfig(authConfig(locale, ''))
+        .getSession();
+
+    const userInfoRes = await AuthApiProvider.getUserInfo({
+        locale,
+        token: session?.token?.accessToken ?? ''
+    });
+
+    const roles = userInfoRes.data?.roles ?? session?.user?.roles ?? [];
+    const isAdmin = roles.some((role) => role.toLowerCase().includes('admin'));
+    const profileName = userInfoRes.data?.name ?? session?.user?.name ?? 'User';
 
 
     return (
@@ -13,21 +33,26 @@ const MainLayoutRoute = (prop: PropsWithChildren) => {
             <CrpLayoutHeader
                 className='main-layout-header'
             >
-                <Anchor href="/">
-                    <Title order={4}>WAIM</Title>
-                </Anchor>
+                <Group justify='space-between'>
+                    <Anchor href="/">
+                        <Title order={4}>WAIM</Title>
+                    </Anchor>
+
+                    <ProfileMenuButton
+                        profileName={profileName}
+                        isAdmin={isAdmin}
+                    />
+                </Group>
 
             </CrpLayoutHeader>
             <CrpLayoutNav
                 className='main-layout-nav'
             >
                 <Box className='menu-list'>
-                    <NavLink label="Home" href="/" />
-                    <NavLink label="Project" href="/project" />
-                    <NavLink label="Setting" href="/settings" />
-                </Box>
-                <Box className='action-list'>
-                    <NavLink label="Logout" href="/logout" />
+                    <Text className='menu-title'>{t('management')}</Text>
+                    <NavLink label={t('control_center')} href="/" />
+                    <NavLink label={t('groups')} href="/group" />
+                    <NavLink label={t('projects')} href="/project" />
                 </Box>
             </CrpLayoutNav>
             <CrpLayoutContent

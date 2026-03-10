@@ -1,205 +1,135 @@
 'use client'
 
-import 'dayjs/locale/ko';
-import { AddProjectAction } from "@/libs/actions/ProjectAction"
-import { DomUtil } from "@crepen/util"
-import { Box, Button, Card, CloseButton, FocusTrap, Grid, Group, Input, ScrollArea, SimpleGrid, Text, TextInput, Title, Typography } from "@mantine/core"
-import { useLocale, useTranslations } from "next-intl"
-import { Fragment, PropsWithChildren, SubmitEvent, useEffect, useRef, useState, useTransition } from "react"
-import { useGlobalLoading } from "../global/GlobalLoadingProvider"
-import { useRouter } from "next/navigation"
-import { DatePickerInput } from '@mantine/dates'
-import { FaRegCalendarMinus } from "react-icons/fa"
-import { MdOutlineCalendarMonth } from "react-icons/md"
+import { AddProjectAction } from '@/libs/actions/ProjectAction';
+import type { GroupData } from '@waim/api';
+import { Box, Button, Card, Divider, Group, Input, Modal, Stack, Text, TextInput } from '@mantine/core';
+import { useLocale, useTranslations } from 'next-intl';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { useGlobalLoading } from '../global/GlobalLoadingProvider';
 
-type AddProjectFormProp = PropsWithChildren & {
-    className?: string
+type AddProjectFormProp = {
+    groups?: GroupData[];
+    initialGroupUid?: string;
 }
 
-export const AddProjectForm = (prop: AddProjectFormProp) => {
-
-    const t = useTranslations();
-
-    const [isLoading, setLoading] = useState<boolean>(false);
+export const AddProjectForm = ({ groups, initialGroupUid }: AddProjectFormProp) => {
+    const t = useTranslations('main.project');
+    const locale = useLocale();
     const loadingContext = useGlobalLoading();
 
-    const projectNameRef = useRef<HTMLInputElement>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [projectName, setProjectName] = useState('');
+    const [projectAlias, setProjectAlias] = useState('');
+    const [selectedGroupUid, setSelectedGroupUid] = useState<string | null>(initialGroupUid ?? null);
+    const [pickerOpen, setPickerOpen] = useState(false);
+    const [pickerSearch, setPickerSearch] = useState('');
 
-    const router = useRouter();
+    const selectedGroupName = useMemo(
+        () => selectedGroupUid ? (groups?.find((x) => x.uid === selectedGroupUid)?.group_name ?? selectedGroupUid) : t('none'),
+        [groups, selectedGroupUid]
+    );
 
-    const [isPending, startTransition] = useTransition();
+    const candidates = useMemo(() => {
+        const term = pickerSearch.trim().toLowerCase();
+        return (groups ?? [])
+            .filter((x) => !term || (x.group_name ?? '').toLowerCase().includes(term) || (x.group_alias ?? '').toLowerCase().includes(term))
+            .sort((a, b) => (a.group_name ?? '').localeCompare(b.group_name ?? ''));
+    }, [groups, pickerSearch]);
 
-
-    const submitEventHandler = async (e: SubmitEvent<HTMLFormElement>) => {
+    const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        e.stopPropagation();
+
+        if (!selectedGroupUid) {
+            toast.error(t('group_required'));
+            return;
+        }
+
+        setIsSubmitting(true);
         loadingContext.setLoadingState(true);
 
         const formData = new FormData(e.currentTarget);
-        const signInActionResult = await AddProjectAction(formData);
 
-        if (signInActionResult.state === false) {
-            alert(signInActionResult.message);
+        const result = await AddProjectAction(formData);
+
+        if (!result.state) {
+            toast.error(result.message ?? t('add_failed'));
+            setIsSubmitting(false);
             loadingContext.setLoadingState(false);
+            return;
         }
-        else {
-            loadingContext.setLoadingState(false);
-            startTransition(() => {
-                router.push('/project');
-            });
 
-        }
-    }
-
-    useEffect(() => {
-        loadingContext.setLoadingState(isPending);
-        return () => {
-            loadingContext.setLoadingState(false);
-        }
-    }, [isPending])
-
+        toast.success(result.message ?? t('added'));
+        const createdProjectAlias = formData.get('project-alias')?.toString() ?? projectAlias;
+        window.location.assign(`/${locale}/project/${createdProjectAlias}`);
+    };
 
     return (
-        <FocusTrap active={true}>
-            <form
-                className={DomUtil.joinClassName(prop.className, "")}
-                onSubmit={submitEventHandler}
-                method="POST"
-            >
-                <TextInput
-                    placeholder="Clearable input"
-                    rightSectionPointerEvents="all"
-                    mb="sm"
-                    ref={projectNameRef}
-                    label="Project Name"
-                    name="project-name"
-                    maw={500}
-                    rightSection={
-                        <CloseButton
-                            aria-label="Clear input"
-                            onClick={(e) => {
-                                // Clear input value
-
-                                if (projectNameRef.current) {
-                                    projectNameRef.current.value = "";
-                                }
-                            }}
-                        />
-                    }
-                />
-
-                <TextInput
-                    placeholder="Clearable input"
-                    rightSectionPointerEvents="all"
-                    mb="sm"
-                    ref={projectNameRef}
-                    label="Project Alias"
-                    name="project-alias"
-                    maw={500}
-                    rightSection={
-                        <CloseButton
-                            aria-label="Clear input"
-                            onClick={(e) => {
-                                // Clear input value
-
-                                if (projectNameRef.current) {
-                                    projectNameRef.current.value = "";
-                                }
-                            }}
-                        />
-                    }
-                />
-
-
-
-                <ProjectDateInputBox />
-
-
-
-                <Group
-                    mt={30}
-                >
-                    <Button type="submit">
-                        SUBMIT
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => history.back()}
-                    >
-                        CANCEL
-                    </Button>
-                </Group>
-
-
-            </form>
-        </FocusTrap>
-
-    )
-}
-
-
-
-
-const ProjectDateInputBox = () => {
-
-    const locale = useLocale();
-
-    const [startDate, setStartDate] = useState<string | null>(null);
-    const [endDate, setEndDate] = useState<string | null>(null);
-
-
-    return (
-        <Fragment>
-            <Title
-                order={3}
-            >
-                Project Date
-            </Title>
-
-            <DatePickerInput
-                leftSection={<MdOutlineCalendarMonth size={14} />}
-                label="Project Start Date"
-                maw={500}
-                mt={10}
-                valueFormat="YYYY-MM-DD"
-                firstDayOfWeek={0}
-                locale={locale ?? 'en'}
-                value={startDate}
-                onChange={(date) => setStartDate(date)}
-                rightSection={
-                    startDate && <CloseButton
-                        aria-label="Clear input"
-                        onClick={(e) => {
-                            setStartDate(null);
-                        }}
+        <Card withBorder>
+            <Box component="form" onSubmit={submit}>
+                <input type="hidden" name="group-uid" value={selectedGroupUid ?? ''} />
+                <Stack>
+                    <TextInput
+                        name="project-name"
+                        label={t('form_project_name')}
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.currentTarget.value)}
+                        required
                     />
-                }
-                rightSectionPointerEvents='all'
-            />
-
-
-
-
-            <DatePickerInput
-                leftSection={<MdOutlineCalendarMonth size={14} />}
-                label="Project End Date"
-                maw={500}
-                mt={10}
-                valueFormat="YYYY-MM-DD"
-                firstDayOfWeek={0}
-                locale={locale ?? 'en'}
-                value={endDate}
-                onChange={(date) => setEndDate(date)}
-                rightSection={
-                    endDate && <CloseButton
-                        aria-label="Clear input"
-                        onClick={(e) => {
-                            setEndDate(null);
-                        }}
+                    <TextInput
+                        name="project-alias"
+                        label={t('form_project_alias')}
+                        value={projectAlias}
+                        onChange={(e) => setProjectAlias(e.currentTarget.value)}
+                        required
                     />
-                }
-                rightSectionPointerEvents='all'
-            />
-        </Fragment>
-    )
-}
+                    <TextInput
+                        label={t('form_group')}
+                        value={selectedGroupName}
+                        readOnly
+                        rightSection={<Button type="button" size="xs" variant="light" onClick={() => setPickerOpen(true)}>{t('select')}</Button>}
+                        rightSectionWidth={72}
+                    />
+                    <Group justify="flex-end">
+                        <Button type="submit" disabled={isSubmitting}>{t('create_project')}</Button>
+                    </Group>
+                </Stack>
+            </Box>
+
+            <Modal opened={pickerOpen} onClose={() => setPickerOpen(false)} title={t('modal_select_group')} size="lg">
+                <Stack>
+                    <Input
+                        placeholder={t('modal_search_group')}
+                        value={pickerSearch}
+                        onChange={(e) => setPickerSearch(e.currentTarget.value)}
+                    />
+                    <Divider />
+                    <Stack gap="xs" mah={360} style={{ overflowY: 'auto' }}>
+                        {candidates.map((item) => (
+                            <Card withBorder key={item.uid}>
+                                <Group justify="space-between">
+                                    <Box>
+                                        <Text fw={600}>{item.group_name}</Text>
+                                        <Text size="xs" c="dimmed">{item.group_alias}</Text>
+                                    </Box>
+                                    <Button
+                                        type="button"
+                                        size="xs"
+                                        onClick={() => {
+                                            setSelectedGroupUid(item.uid);
+                                            setPickerOpen(false);
+                                        }}
+                                    >
+                                        {t('select')}
+                                    </Button>
+                                </Group>
+                            </Card>
+                        ))}
+                        {candidates.length === 0 && <Text c="dimmed">{t('modal_no_groups')}</Text>}
+                    </Stack>
+                </Stack>
+            </Modal>
+        </Card>
+    );
+};

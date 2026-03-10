@@ -3,10 +3,7 @@ import { CustomProxyChain } from "./chain";
 import { NextResponse } from "next/server";
 import { AuthProvider } from '@crepen/auth'
 import authConfig from "@/config/auth/AuthConfig";
-import * as DateFns from 'date-fns'
 import { I18nConfig } from "../i18n/i18n.config";
-import { cookies } from "next/headers";
-import { getLocale } from "next-intl/server";
 
 
 export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
@@ -41,8 +38,8 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
     if (isLoginPage) {
       // Login page 접속중일 경우
 
-      if (!(isAccessTokenExpired && isRefreshTokenExpired)) {
-        // Access Token / Refresh Token 모두 유효
+      if (!isAccessTokenExpired && !isRefreshTokenExpired) {
+        // Access Token / Refresh Token 모두 유효할 때만 메인으로 이동
 
         const mainUrl = new URL(`/${initLocale}`, request.url);
         return NextResponse.redirect(mainUrl);
@@ -51,8 +48,8 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
     else {
       // 일반 페이지 접속중일 경우
 
-      if (!tokenExpireDate || (isAccessTokenExpired && isRefreshTokenExpired)) {
-        // Access Token / Refresh Token 모두 만료
+      if (!tokenExpireDate || isRefreshTokenExpired) {
+        // refresh 토큰 만료 또는 세션 없음
 
         // Session Clear
         await authProvider.clear();
@@ -60,21 +57,15 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
         return NextResponse.redirect(loginUrl);
       }
 
-      const checkDate = DateFns.addMinutes(tokenExpireDate, -20);
+      // 일반 페이지 요청마다 토큰 갱신
+      const refreshRes = await authProvider.refresh();
 
-      // Access Token 만료 20분 전일 경우 Token Refresh
-      if (isAccessTokenExpired || checkDate < new Date()) {
-        // Token Refresh
-
-        const refreshRes = await authProvider.refresh();
-
-        if (refreshRes.state !== true) {
-          // Refresh 실패 시
-
-          // Session Clear
-          await authProvider.clear();
-          console.error('REFRESH ERROR : ', refreshRes.message);
-        }
+      if (refreshRes.state !== true) {
+        // Refresh 실패 시 세션을 비우고 로그인 페이지로 이동
+        await authProvider.clear();
+        console.error('REFRESH ERROR : ', refreshRes.message);
+        const loginUrl = new URL(`/${initLocale}/login`, request.url);
+        return NextResponse.redirect(loginUrl);
       }
     }
 

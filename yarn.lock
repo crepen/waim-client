@@ -12,13 +12,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@crepen/auth@npm:1.0.3-beta23":
-  version: 1.0.3-beta23
-  resolution: "@crepen/auth@npm:1.0.3-beta23::__archiveUrl=http%3A%2F%2Fnexus.crepen.kro.kr%2Frepository%2Fcrepen-npm-group%2F%40crepen%2Fauth%2F-%2Fauth-1.0.3-beta23.tgz"
+"@crepen/auth@npm:1.0.3-beta25":
+  version: 1.0.3-beta25
+  resolution: "@crepen/auth@npm:1.0.3-beta25::__archiveUrl=http%3A%2F%2Fnexus.crepen.kro.kr%2Frepository%2Fcrepen-npm-group%2F%40crepen%2Fauth%2F-%2Fauth-1.0.3-beta25.tgz"
   peerDependencies:
     "@crepen/util": "*"
     next: ^16.1.0
-  checksum: 10c0/7d84e94386d421da4a65e028c460d959f8fc0074cf00803b0a77a0ff9b4baf6624bef21707216bf08689b2d8f5d65ffde8a2934d0a83b6c3cea6e827c6b081b5
+  checksum: 10c0/5c8395dd40f24dd878d9f8379ce34cee42c7aa9360937369c6dc426206ec9597150bf75646710dfa4d334c256b13c4358d9e679ff5035548829b8b5821a77961
   languageName: node
   linkType: hard
 
@@ -1299,7 +1299,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@waim/client@workspace:apps/web"
   dependencies:
-    "@crepen/auth": "npm:1.0.3-beta23"
+    "@crepen/auth": "npm:1.0.3-beta25"
     "@crepen/util": "npm:1.0.1-beta2"
     "@mantine/core": "npm:^8.3.14"
     "@mantine/dates": "npm:^8.3.15"

@@ -1,8 +1,8 @@
 import { RemoveProjectAction } from "@/libs/actions/ProjectAction";
-import { Box, Button, Center, Flex, LoadingOverlay, Modal, Space, Typography } from "@mantine/core"
-import { usePathname, useSearchParams } from "next/navigation";
+import { Box, Button, Flex, Modal, Space, Text } from "@mantine/core"
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
+import { useTranslations } from "next-intl";
 import { CiWarning } from "react-icons/ci";
 import { toast } from "sonner";
 import { useGlobalLoading } from "../global/GlobalLoadingProvider";
@@ -14,6 +14,7 @@ type ProjectRemoveModalProps = {
 }
 
 export const ProjectRemoveModal = (prop: ProjectRemoveModalProps) => {
+    const t = useTranslations('main.project');
 
     const router = useRouter();
     const loadingContext = useGlobalLoading();
@@ -35,7 +36,7 @@ export const ProjectRemoveModal = (prop: ProjectRemoveModalProps) => {
             toast.error(removeProjectResult.message);
         }
         else {
-            toast.success("Project removed successfully");
+            toast.success(t('remove_success'));
             router.refresh();
         }
 
@@ -61,13 +62,9 @@ export const ProjectRemoveModal = (prop: ProjectRemoveModalProps) => {
                     <CiWarning
                         size={60}
                     />
-                    <h1>Project Remove Modal</h1>
-                    <Typography>
-                        Are you sure you want to remove this project?
-                    </Typography>
-                    <Typography>
-                        This action cannot be undone.
-                    </Typography>
+                    <h1>{t('remove_modal_title')}</h1>
+                    <Text>{t('remove_modal_desc_1')}</Text>
+                    <Text>{t('remove_modal_desc_2')}</Text>
                 </Box>
                 <Space h={20} />
                 <Flex
@@ -78,13 +75,13 @@ export const ProjectRemoveModal = (prop: ProjectRemoveModalProps) => {
                         color="red"
                         onClick={() => removeProjectHandle(prop.projectUid)}
                     >
-                        Remove
+                        {t('remove_confirm')}
                     </Button>
                     <Button
                         variant="outline"
                         onClick={prop.onClose}
                     >
-                        Cancel
+                        {t('cancel')}
                     </Button>
                 </Flex>
             </Modal>

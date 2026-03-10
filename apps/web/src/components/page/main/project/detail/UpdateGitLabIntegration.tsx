@@ -1,4 +1,5 @@
 import { ActionIcon, Button, Divider, Drawer, Group, Modal, PasswordInput, TextInput, Title } from "@mantine/core";
+import { useTranslations } from "next-intl";
 import { IoSettingsOutline } from "react-icons/io5";
 
 type UpdateGitLabIntegrationModalProps = {
@@ -7,6 +8,7 @@ type UpdateGitLabIntegrationModalProps = {
 }
 
 export const UpdateGitLabIntegrationDrawer = (prop: UpdateGitLabIntegrationModalProps) => {
+    const t = useTranslations('main.project');
 
     const submitEventHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -31,13 +33,13 @@ export const UpdateGitLabIntegrationDrawer = (prop: UpdateGitLabIntegrationModal
         >
             <form onSubmit={submitEventHandler}>
                 <Title order={3}>
-                    Update GitLab Integration Settings
+                    {t('gitlab_setting_title')}
                 </Title>
 
                 <Divider my={10} />
 
                 <TextInput
-                    label="Repository URL"
+                    label={t('gitlab_repository_url')}
                     mb={10}
                     data-autofocus
                     radius={10}
@@ -45,7 +47,7 @@ export const UpdateGitLabIntegrationDrawer = (prop: UpdateGitLabIntegrationModal
                 />
 
                 <PasswordInput
-                    label="Access Token"
+                    label={t('gitlab_access_token')}
                     mb={10}
                     radius={10}
                     name="gitlab-access-token"
@@ -58,14 +60,14 @@ export const UpdateGitLabIntegrationDrawer = (prop: UpdateGitLabIntegrationModal
                     <Button
                         type="submit"
                     >
-                        Save
+                        {t('save')}
                     </Button>
                     <Button
                         type="button"
                         variant="outline"
                         onClick={prop.onClose}
                     >
-                        Cancel
+                        {t('cancel')}
                     </Button>
                 </Group>
             </form>

@@ -3,9 +3,6 @@
 import authConfig from '@root/config/auth/AuthConfig'
 import { AuthProvider } from '@crepen/auth'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { UserConfigAction } from './UserConfigAction'
-import { UserApiProvider } from '@waim/api'
-import { UserConfigureProvider } from '../service/UserConfigureProvider'
 
 
 
@@ -21,17 +18,7 @@ export const LoginAction = async (formData: FormData) => {
             .setConfig(authConfig(locale, t("auth.default_error_message")))
             .signIn(id?.toString() ?? "", password?.toString() ?? "");
 
-
-
-        if (signInResult.state === true) {
-            const userConfigRes = await UserApiProvider.getUserConfig({
-                locale: locale,
-                token: signInResult.session?.token?.accessToken ?? ""
-            })
-
-            UserConfigureProvider.setConfigure(userConfigRes.data ?? []);
-        }
-        else{
+        if (signInResult.state !== true) {
             console.error("Login failed:", signInResult);
         }
 

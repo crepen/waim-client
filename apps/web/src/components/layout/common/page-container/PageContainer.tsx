@@ -1,6 +1,7 @@
 'use client'
 
 import './page-container.scss';
+import { MainBreadcrumbs } from './MainBreadcrumbs';
 
 import { DomUtil } from "@crepen/util";
 import { Box, BoxProps, MantineStyleProp, ScrollArea } from "@mantine/core";
@@ -95,6 +96,7 @@ export const MainContainerHeader = (prop: MainContainerHeaderProps) => {
             ref={setHeaderRef} 
             className={DomUtil.joinClassName("crp-main-container-header", prop.className)}
         >
+            <MainBreadcrumbs />
             {prop.children}
         </Box>
     );

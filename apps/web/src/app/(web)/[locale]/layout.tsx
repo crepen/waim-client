@@ -36,6 +36,42 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
     notFound();
   }
 
+  const materialTheme = createTheme({
+    scale: 1.6,
+    primaryColor: 'blue',
+    defaultRadius: 'md',
+    fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',
+    headings: {
+      fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',
+      fontWeight: '600'
+    },
+    shadows: {
+      xs: '0 1px 3px rgba(0, 0, 0, 0.16)',
+      sm: '0 2px 6px rgba(0, 0, 0, 0.16)',
+      md: '0 4px 12px rgba(0, 0, 0, 0.18)',
+      lg: '0 8px 20px rgba(0, 0, 0, 0.18)',
+      xl: '0 12px 28px rgba(0, 0, 0, 0.22)'
+    },
+    components: {
+      Button: {
+        defaultProps: {
+          radius: 'md'
+        }
+      },
+      Card: {
+        defaultProps: {
+          radius: 'md',
+          shadow: 'xs'
+        }
+      },
+      NavLink: {
+        defaultProps: {
+          variant: 'light',
+          radius: 'md'
+        }
+      }
+    }
+  });
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -47,7 +83,7 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
       <body>
         <NextIntlClientProvider messages={messages}>
           <MantineProvider
-            theme={createTheme({ scale: 1.6 })}
+            theme={materialTheme}
             defaultColorScheme='light'
           >
             {/* <GlobalHeightProvider
@@ -56,12 +92,9 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
               <GlobalLoadingProvider>
                 <Toaster />
 
-
                 <div id='root'>
                   {prop.children}
                 </div>
-
-
               </GlobalLoadingProvider>
             {/* </GlobalHeightProvider> */}
           </MantineProvider>

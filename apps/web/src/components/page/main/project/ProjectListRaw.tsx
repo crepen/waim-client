@@ -1,11 +1,12 @@
 'use client'
 
-import { ActionIcon, Badge, Box, Card, Grid, Group, Menu, Paper, Space, Text, Typography } from "@mantine/core"
+import { ActionIcon, Badge, Box, Button, Card, Flex, Group, Menu, Text, ThemeIcon } from "@mantine/core"
 import Link from "next/link"
+import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { FaTrash, FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
+import { SlBriefcase } from "react-icons/sl";
 import { SlOptions } from "react-icons/sl";
-import { TbTrash } from "react-icons/tb";
 import { ProjectRemoveModal } from "./ProjectRemoveModal";
 
 type ProjectListRawProp = {
@@ -13,60 +14,55 @@ type ProjectListRawProp = {
     projectName: string;
     projectOwnerName: string;
     projectUid: string;
+    groupUid?: string | null;
+    groupName?: string | null;
 }
 
 export const ProjectListRaw = (prop: ProjectListRawProp) => {
+    const t = useTranslations('main.project');
 
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
 
     return (
         <Card
-            padding="sm"
-            pl='lg'
-            pr='lg'
-            radius="md"
-            shadow="sm"
             withBorder
-            className="project-item"
             mb='sm'
         >
-            <Grid
-                align="center"
-            >
-                <Grid.Col span={4}>
+            <Flex justify='space-between' align='center' wrap='wrap' gap='xs'>
+                <Group gap='xs'>
+                    <ThemeIcon radius='xl' size='sm' color='teal' variant='light'>
+                        <SlBriefcase size={12} />
+                    </ThemeIcon>
                     <Box>
-                        <Badge color="blue">{prop.projectAlias}</Badge>
-                        <Space h={5} />
-                        <Typography>
-                            <Link href={`/project/${prop.projectAlias}`}>
+                        <Group gap='xs'>
+                            <Badge color='teal' variant='light'>{t('project_badge')}</Badge>
+                            <Badge color='gray' variant='light'>{prop.projectAlias}</Badge>
+                            <Text component={Link} href={`/project/${prop.projectAlias}`} fw={600} style={{ textDecoration: 'underline' }}>
                                 {prop.projectName}
-                            </Link>
-                        </Typography>
+                            </Text>
+                        </Group>
+                        <Text size="xs" c="dimmed">{t('owner', { owner: prop.projectOwnerName })}</Text>
+                        <Text size="xs" c="dimmed">{t('group', { group: prop.groupName ?? prop.groupUid ?? t('root') })}</Text>
                     </Box>
-                </Grid.Col>
-                <Grid.Col span={7}>
-                    <Text size="sm">{prop.projectOwnerName}</Text>
-                </Grid.Col>
-                <Grid.Col span={1} style={{ textAlign: 'end' }}>
+                </Group>
+                <Group gap='xs'>
+                    <Button component={Link} href={`/project/${prop.projectAlias}`} size='xs' variant='light'>{t('open')}</Button>
                     <Menu
                         shadow="md"
-                        width={200}
+                        width={180}
                         position="bottom-end"
-                        // transitionProps={{ transition: 'pop' }}
                         withinPortal
                     >
                         <Menu.Target>
                             <ActionIcon
-                                variant="white"
+                                variant="subtle"
                             >
                                 <SlOptions />
                             </ActionIcon>
                         </Menu.Target>
                         <Menu.Dropdown>
 
-                            <Menu.Label>
-                                Project Actions
-                            </Menu.Label>
+                            <Menu.Label>{t('actions')}</Menu.Label>
 
                             <Menu.Item
                                 leftSection={
@@ -77,13 +73,13 @@ export const ProjectListRaw = (prop: ProjectListRawProp) => {
                                 onClick={() => setDeleteModalOpened(true)}
                                 color="red"
                             >
-                                Delete
+                                {t('delete')}
                             </Menu.Item>
                         </Menu.Dropdown>
 
                     </Menu>
-                </Grid.Col>
-            </Grid>
+                </Group>
+            </Flex>
 
 
 

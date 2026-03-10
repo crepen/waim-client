@@ -14,6 +14,7 @@ export const AddProjectAction = async (formData: FormData) => {
     try {
         const projectName = formData.get('project-name');
         const projectAlias = formData.get('project-alias');
+        const groupUid = formData.get('group-uid');
 
         const session = await AuthProvider
             .setConfig(authConfig(locale, t("auth.default_error_message")))
@@ -23,7 +24,8 @@ export const AddProjectAction = async (formData: FormData) => {
         const resData = await ProjectApiProvider.addProject(
             {
                 projectAlias: projectAlias?.toString() ?? "",
-                projectName: projectName?.toString() ?? ""
+                projectName: projectName?.toString() ?? "",
+                groupUid: groupUid?.toString() ?? ""
             },
             {
                 locale: locale,
