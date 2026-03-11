@@ -1,6 +1,9 @@
 'use client'
 
 import {
+    ApproveAdminUserAction,
+    BlockAdminUserAction,
+    DeleteAdminUserAction,
     UpdateAdminUserInfoAction,
     UpdateAdminUserPasswordAction,
     UpdateAdminUserRoleAction
@@ -14,14 +17,13 @@ import {
     Group,
     NativeSelect,
     PasswordInput,
-    Space,
     Stack,
     Text,
     TextInput
 } from '@mantine/core';
 import type { AdminUserData } from '@waim/api/types';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type AdminUserDetailFormProps = {
@@ -31,6 +33,8 @@ type AdminUserDetailFormProps = {
 export const AdminUserDetailForm = ({ user }: AdminUserDetailFormProps) => {
     const t = useTranslations('main.admin');
     const router = useRouter();
+    const params = useParams<{ locale: string }>();
+    const locale = params?.locale ?? 'ko';
 
     // Info edit state
     const [editingInfo, setEditingInfo] = useState(false);
@@ -52,6 +56,11 @@ export const AdminUserDetailForm = ({ user }: AdminUserDetailFormProps) => {
     const [roleMessage, setRoleMessage] = useState('');
     const [roleSuccess, setRoleSuccess] = useState<boolean | null>(null);
     const [roleLoading, setRoleLoading] = useState(false);
+
+    // Account action state
+    const [actionMessage, setActionMessage] = useState('');
+    const [actionSuccess, setActionSuccess] = useState<boolean | null>(null);
+    const [actionLoading, setActionLoading] = useState(false);
 
     const handleInfoSave = async () => {
         setInfoLoading(true);
@@ -116,11 +125,51 @@ export const AdminUserDetailForm = ({ user }: AdminUserDetailFormProps) => {
         }
     };
 
+    const runAccountAction = async (action: 'approve' | 'block' | 'delete') => {
+        const confirmed = window.confirm(
+            action === 'approve'
+                ? t('user_action_confirm_approve')
+                : action === 'block'
+                    ? t('user_action_confirm_block')
+                    : t('user_action_confirm_delete')
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        setActionLoading(true);
+        setActionMessage('');
+        setActionSuccess(null);
+
+        const result = action === 'approve'
+            ? await ApproveAdminUserAction(user.uid)
+            : action === 'block'
+                ? await BlockAdminUserAction(user.uid)
+                : await DeleteAdminUserAction(user.uid);
+
+        setActionMessage(result.message ?? '');
+        setActionSuccess(result.state === true);
+        setActionLoading(false);
+
+        if (result.state) {
+            router.push(`/${locale}/admin/users`);
+            router.refresh();
+        }
+    };
+
     const getStatusColor = (s: string) => {
         if (s === 'ACTIVE') return 'teal';
         if (s === 'INACTIVE') return 'gray';
         if (s === 'BLOCK') return 'red';
         return 'gray';
+    };
+
+    const getStatusLabel = (s: string) => {
+        if (s === 'ACTIVE') return t('status_active');
+        if (s === 'INACTIVE') return t('status_inactive');
+        if (s === 'BLOCK') return t('status_block');
+        return s;
     };
 
     return (
@@ -166,7 +215,7 @@ export const AdminUserDetailForm = ({ user }: AdminUserDetailFormProps) => {
                         <Box>
                             <Text size='sm' fw={500} mb={4}>{t('status')}</Text>
                             <Badge variant='light' color={getStatusColor(user.status)}>
-                                {user.status}
+                                {getStatusLabel(user.status)}
                             </Badge>
                         </Box>
                     )}
@@ -255,6 +304,38 @@ export const AdminUserDetailForm = ({ user }: AdminUserDetailFormProps) => {
                 {roleMessage && (
                     <Text size='sm' c={roleSuccess ? 'teal' : 'red'} mt='sm'>
                         {roleMessage}
+                    </Text>
+                )}
+            </Card>
+
+            {/* Account Action Section */}
+            <Card withBorder>
+                <Box mb='xs'>
+                    <Text fw={700}>{t('user_account_action_section')}</Text>
+                    <Text size='sm' c='dimmed'>{t('user_account_action_section_desc')}</Text>
+                </Box>
+
+                <Divider mb='md' />
+
+                <Group mt='md'>
+                    {user.status === 'INACTIVE' && (
+                        <Button size='xs' color='teal' onClick={() => runAccountAction('approve')} loading={actionLoading}>
+                            {t('user_approve_button')}
+                        </Button>
+                    )}
+                    {user.status !== 'BLOCK' && (
+                        <Button size='xs' color='orange' onClick={() => runAccountAction('block')} loading={actionLoading}>
+                            {t('user_block_button')}
+                        </Button>
+                    )}
+                    <Button size='xs' color='red' onClick={() => runAccountAction('delete')} loading={actionLoading}>
+                        {t('user_delete_button')}
+                    </Button>
+                </Group>
+
+                {actionMessage && (
+                    <Text size='sm' c={actionSuccess ? 'teal' : 'red'} mt='sm'>
+                        {actionMessage}
                     </Text>
                 )}
             </Card>

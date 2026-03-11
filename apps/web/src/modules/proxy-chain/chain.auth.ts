@@ -10,6 +10,12 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
   (next) => async (request, event) => {
     
     const { pathname } = request.nextUrl;
+    const isServerActionRequest = request.method === 'POST' && request.headers.has('next-action');
+
+    // Next.js Server Action 요청은 HTML redirect 응답을 받으면 클라이언트에서 런타임 오류가 발생할 수 있어 인증 체인 우회.
+    if (isServerActionRequest) {
+      return next(request, event, async () => { });
+    }
 
     // 1. URL Pathname에서 직접 locale 추출 (예: /en/login -> en)
     const segments = pathname.split('/');
@@ -33,10 +39,10 @@ export const chainAuth: (middleware: CustomProxyChain) => CustomProxyChain =
     const isAccessTokenExpired = await authProvider.isAccessTokenExpired();
     const isRefreshTokenExpired = await authProvider.isRefreshTokenExpired();
 
-    const isLoginPage = pathname.includes("/login");
+    const isPublicAuthPage = pathname.includes("/login") || pathname.includes("/signup") || pathname.includes("/forgot-password");
 
-    if (isLoginPage) {
-      // Login page 접속중일 경우
+    if (isPublicAuthPage) {
+      // 로그인/회원가입 페이지 접속중일 경우
 
       if (!isAccessTokenExpired && !isRefreshTokenExpired) {
         // Access Token / Refresh Token 모두 유효할 때만 메인으로 이동

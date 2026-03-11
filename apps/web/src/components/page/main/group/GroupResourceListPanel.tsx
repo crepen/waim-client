@@ -8,6 +8,7 @@ import { SlBriefcase, SlLayers } from 'react-icons/sl';
 
 type GroupResourceListPanelProps = {
     groupUid: string;
+    currentGroupAliasPath: string[];
     childGroups: GroupData[];
     projects: ProjectData[];
 }
@@ -24,7 +25,7 @@ type UnifiedItem = {
     meta: string;
 }
 
-export const GroupResourceListPanel = ({ groupUid, childGroups, projects }: GroupResourceListPanelProps) => {
+export const GroupResourceListPanel = ({ groupUid, currentGroupAliasPath, childGroups, projects }: GroupResourceListPanelProps) => {
     const t = useTranslations('main.group');
     const [keyword, setKeyword] = useState('');
     const [sortOption, setSortOption] = useState<SortOption>('group_first');
@@ -36,7 +37,7 @@ export const GroupResourceListPanel = ({ groupUid, childGroups, projects }: Grou
             type: 'group',
             name: group.group_name ?? '',
             alias: group.group_alias ?? '',
-            href: `/group/${group.uid}?group_alias=${encodeURIComponent(group.group_alias ?? '')}`,
+            href: `/group/${[...currentGroupAliasPath, group.group_alias ?? group.uid].map((x) => encodeURIComponent(x)).join('/')}`,
             meta: t('meta_child_project', {
                 childCount: group.child_group_count ?? 0,
                 projectCount: group.linked_project_count ?? 0
@@ -84,7 +85,7 @@ export const GroupResourceListPanel = ({ groupUid, childGroups, projects }: Grou
 
             return a.name.localeCompare(b.name);
         });
-    }, [childGroups, filterOption, keyword, projects, sortOption]);
+    }, [childGroups, currentGroupAliasPath, filterOption, keyword, projects, sortOption]);
 
     return (
         <Card withBorder>

@@ -77,7 +77,7 @@ export const GroupManagePanel = ({ topGroups, hasApiError }: GroupManagePanelPro
                                     </ThemeIcon>
                                     <Badge color="indigo" variant="light">{t('group_badge')}</Badge>
                                     <Badge color="gray" variant="light">{group.group_alias}</Badge>
-                                    <Text component={Link} href={`/group/${group.uid}?group_alias=${encodeURIComponent(group.group_alias ?? '')}`} fw={600} style={{ textDecoration: 'underline' }}>
+                                    <Text component={Link} href={`/group/${encodeURIComponent(group.group_alias ?? group.uid)}`} fw={600} style={{ textDecoration: 'underline' }}>
                                         {group.group_name}
                                     </Text>
                                 </Group>

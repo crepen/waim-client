@@ -21,6 +21,9 @@ export const MainSideNavMenu = ({ isAdmin }: MainSideNavMenuProps) => {
                 <NavLink label={t('admin_user_management')} href='/admin/users' />
                 <NavLink label={t('admin_project_management')} href='/admin/projects' />
                 <NavLink label={t('admin_group_management')} href='/admin/groups' />
+
+                <Text className='menu-title'>{t('settings_management')}</Text>
+                <NavLink label={t('admin_user_setting_management')} href='/admin/user-settings' />
                 <NavLink label={t('admin_site_setting_management')} href='/admin/site-settings' />
             </Box>
         );

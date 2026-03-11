@@ -1,9 +1,12 @@
 import { MainContainer, MainContainerHeader, MainContainerScrollContent } from '@/components/layout/common/page-container/PageContainer';
-import { Box, Card, Text, Title } from '@mantine/core';
+import { AdminSmtpSettingsForm } from '@/components/page/main/admin/AdminSmtpSettingsForm';
+import { GetAdminSmtpSettingsAction } from '@/libs/actions/AdminSiteSettingsAction';
+import { Box, Text, Title } from '@mantine/core';
 import { getTranslations } from 'next-intl/server';
 
 const AdminSiteSettingsPage = async () => {
     const t = await getTranslations('main.admin');
+    const smtpSettingsRes = await GetAdminSmtpSettingsAction();
 
     return (
         <MainContainer>
@@ -15,9 +18,10 @@ const AdminSiteSettingsPage = async () => {
             </MainContainerHeader>
             <MainContainerScrollContent>
                 <Box p='md'>
-                    <Card withBorder>
-                        <Text size='sm' c='dimmed'>{t('in_progress')}</Text>
-                    </Card>
+                    <AdminSmtpSettingsForm
+                        initialValue={smtpSettingsRes.data}
+                        initialMessage={smtpSettingsRes.state ? undefined : (smtpSettingsRes.message ?? t('smtp_settings_load_failed'))}
+                    />
                 </Box>
             </MainContainerScrollContent>
         </MainContainer>

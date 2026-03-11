@@ -34,8 +34,8 @@ export const MainBreadcrumbs = () => {
 		return null;
 	}
 
-	const groupAlias = searchParams.get('group_alias') ?? '';
 	const projectAlias = searchParams.get('project_alias') ?? '';
+	const groupIndex = routeSegments.indexOf('group');
 
 	const items = routeSegments.map((segment, index) => {
 		let href = `/${segments[0]}/${routeSegments.slice(0, index + 1).join('/')}`;
@@ -43,16 +43,13 @@ export const MainBreadcrumbs = () => {
 		const previousSegment = index > 0 ? routeSegments[index - 1] : '';
 
 		let label = buildLabel(segment);
-		if (previousSegment === 'group' && groupAlias) {
-			label = groupAlias;
+		if (groupIndex !== -1 && index > groupIndex && segment !== 'setting') {
+			label = decodeURIComponent(segment);
 		}
 		if (previousSegment === 'project' && projectAlias) {
 			label = projectAlias;
 		}
 
-		if (previousSegment === 'group' && groupAlias) {
-			href = `${href}?group_alias=${encodeURIComponent(groupAlias)}`;
-		}
 		if (previousSegment === 'project' && projectAlias) {
 			href = `${href}?project_alias=${encodeURIComponent(projectAlias)}`;
 		}

@@ -24,7 +24,7 @@
         p {
             margin: 0;
             color: #64748b;
-            font-size: 0.95rem;
+            font-size: 1.4rem;
         }
     }
 
@@ -38,6 +38,53 @@
         form {
             width: 100%;
         }
+
+        .auth-link-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .auth-link-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 38px;
+            border-radius: 10px;
+            border: 1px solid #d4deec;
+            background: linear-gradient(180deg, #f9fbff 0%, #f2f6fc 100%);
+            color: #244266;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .auth-link-button:hover {
+            transform: translateY(-1px);
+            border-color: #8ca9d1;
+            box-shadow: 0 8px 18px rgba(36, 66, 102, 0.12);
+        }
+
+        .auth-link-button.signup {
+            background: linear-gradient(180deg, #ecf3ff 0%, #dfeeff 100%);
+            color: #1e4a8a;
+            border-color: #b7cff2;
+        }
+
+        .auth-link-button.forgot {
+            background: linear-gradient(180deg, #effaf5 0%, #e2f5eb 100%);
+            color: #1b6b4c;
+            border-color: #bde2cf;
+        }
+
+        .auth-primary-button {
+            min-height: 42px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            box-shadow: 0 8px 18px rgba(31, 59, 92, 0.16);
+        }
     }
 }
 
@@ -46,5 +93,11 @@
         max-width: 100%;
         padding: 1.1rem;
         border-radius: 10px;
+
+        .sign-in-form {
+            .auth-link-actions {
+                grid-template-columns: 1fr;
+            }
+        }
     }
 }

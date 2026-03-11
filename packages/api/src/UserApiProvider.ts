@@ -1,7 +1,55 @@
-import { AddAdminUserProp, AdminUserData, SearchAdminUserProp, UpdateAdminUserProp, UserConfig, UserConfigResponse } from "./types";
+import { AddAdminUserProp, AddGeneralUserProp, AdminUserData, GlobalConfig, SearchAdminUserProp, SmtpGlobalConfigPayload, UpdateAdminUserProp, UserConfig, UserConfigResponse } from "./types";
 import { CommonApiProp, CommonApiResponse, CommonApiResult, CommonPageableApiResponse, CommonPageableApiResult } from "./types/CommonApiProvider"
 
 export class UserApiProvider {
+    static signup = async (options: AddGeneralUserProp, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/user`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                },
+                body: JSON.stringify({
+                    user_id: options.userId,
+                    user_name: options.userName,
+                    user_password: options.password,
+                    user_email: options.email
+                })
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
     static searchAdminUsers = async (options?: SearchAdminUserProp, config?: Partial<CommonApiProp>): Promise<CommonPageableApiResult<AdminUserData[]>> => {
 
         try {
@@ -168,7 +216,6 @@ export class UserApiProvider {
                 body: JSON.stringify({
                     user_name: options.userName,
                     user_email: options.email,
-                    user_status: options.status,
                     user_password: options.password,
                     user_role: options.role
                 })
@@ -180,6 +227,129 @@ export class UserApiProvider {
                 data = await res.json();
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static approveAdminUser = async (uid: string, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/admin/user/${encodeURIComponent(uid)}/approve`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                }
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static blockAdminUser = async (uid: string, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/admin/user/${encodeURIComponent(uid)}/block`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                }
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static deleteAdminUser = async (uid: string, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/admin/user/${encodeURIComponent(uid)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                }
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
             catch (e) {
                 /* empty */
             }
@@ -296,6 +466,207 @@ export class UserApiProvider {
             return {
                 state : false,
                 message : 'Server connect failed.'
+            }
+        }
+    }
+
+    static getGlobalConfig = async (keys: string[], config?: Partial<CommonApiProp>): Promise<CommonApiResult<GlobalConfig[]>> => {
+        try {
+            const apiUrl = new URL(`${process.env.WAIM_API_URL}/api/config/global`);
+
+            keys.forEach((key) => {
+                apiUrl.searchParams.append('keys', key);
+            });
+
+            const res = await fetch(apiUrl.toString(), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                }
+            });
+
+            let data: CommonApiResponse<GlobalConfig[]> | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message,
+                data: data.result
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static updateGlobalConfig = async (key: string, value: string, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/config/global`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                },
+                body: JSON.stringify({
+                    key,
+                    value
+                })
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static updateSmtpGlobalConfig = async (options: SmtpGlobalConfigPayload, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/config/global/smtp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                },
+                body: JSON.stringify({
+                    smtpEnabled: options.smtpEnabled,
+                    host: options.host,
+                    port: options.port,
+                    username: options.username,
+                    password: options.password,
+                    fromEmail: options.fromEmail,
+                    fromName: options.fromName,
+                    authEnabled: options.authEnabled,
+                    startTlsEnabled: options.startTlsEnabled,
+                    sslEnabled: options.sslEnabled
+                })
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
+            }
+        }
+    }
+
+    static testSmtpGlobalConfig = async (options: SmtpGlobalConfigPayload, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const res = await fetch(`${process.env.WAIM_API_URL}/api/config/global/smtp/test`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko',
+                    'Authorization': `Bearer ${config?.token ?? ""}`
+                },
+                body: JSON.stringify({
+                    smtpEnabled: options.smtpEnabled,
+                    host: options.host,
+                    port: options.port,
+                    username: options.username,
+                    password: options.password,
+                    fromEmail: options.fromEmail,
+                    fromName: options.fromName,
+                    authEnabled: options.authEnabled,
+                    startTlsEnabled: options.startTlsEnabled,
+                    sslEnabled: options.sslEnabled
+                })
+            });
+
+            let data: CommonApiResponse | undefined = undefined;
+
+            try {
+                data = await res.json();
+            }
+            catch (e) {
+                /* empty */
+            }
+
+            if (!res.ok || data === undefined) {
+                return {
+                    state: false,
+                    message: data?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: data.state,
+                message: data.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'Server connect failed.'
             }
         }
     }

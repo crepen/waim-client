@@ -100,4 +100,47 @@ export class AuthApiProvider {
         }
     }
 
+    static forgotPassword = async (email: string, config?: Partial<CommonApiProp>): Promise<CommonApiResult> => {
+        try {
+            const apiUrl = new URL(`${process.env.WAIM_API_URL}/api/auth/password/reset`);
+
+            const res = await fetch(apiUrl.toString(), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept-Language': config?.locale ?? 'ko'
+                },
+                body: JSON.stringify({
+                    email
+                })
+            });
+
+            let resJson: CommonApiResponse | undefined = undefined;
+
+            try {
+                resJson = await res.json();
+            }
+            catch (e) { /** empty */ }
+
+            if (!res.ok || resJson === undefined) {
+                return {
+                    state: false,
+                    message: resJson?.message ?? 'Server connect failed.'
+                }
+            }
+
+            return {
+                state: resJson.state,
+                message: resJson.message
+            }
+        }
+        catch (e) {
+            console.error(e);
+            return {
+                state: false,
+                message: 'System error.'
+            }
+        }
+    }
+
 }

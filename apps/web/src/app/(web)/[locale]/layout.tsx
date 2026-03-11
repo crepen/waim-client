@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     default: "WAIM",
     template: "%s | WAIM",
   },
-  description: "Web Access Information Management System",
+  description: "WAIM",
 };
 
 interface RootLayoutProp extends PropsWithChildren {
@@ -40,6 +40,13 @@ const RootLayout = async (prop: Readonly<RootLayoutProp>) => {
     scale: 1.6,
     primaryColor: 'blue',
     defaultRadius: 'md',
+    fontSizes: {
+      xs: '14px',
+      sm: '14px',
+      md: '16px',
+      lg: '18px',
+      xl: '20px'
+    },
     fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',
     headings: {
       fontFamily: 'Pretendard, Roboto, "Noto Sans KR", sans-serif',

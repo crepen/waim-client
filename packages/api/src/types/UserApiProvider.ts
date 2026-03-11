@@ -5,6 +5,24 @@ export type UserConfig = {
     value : string
 }
 
+export type GlobalConfig = {
+    key: string,
+    value: string
+}
+
+export type SmtpGlobalConfigPayload = {
+    smtpEnabled: string,
+    host: string,
+    port: string,
+    username: string,
+    password: string,
+    fromEmail: string,
+    fromName: string,
+    authEnabled: string,
+    startTlsEnabled: string,
+    sslEnabled: string
+}
+
 export type AdminUserData = {
     uid: string,
     userId: string,
@@ -28,10 +46,16 @@ export type AddAdminUserProp = {
     email: string
 }
 
+export type AddGeneralUserProp = {
+    userId: string,
+    userName: string,
+    password: string,
+    email: string
+}
+
 export type UpdateAdminUserProp = {
     userName?: string,
     email?: string,
-    status?: string,
     password?: string,
     role?: string
 }

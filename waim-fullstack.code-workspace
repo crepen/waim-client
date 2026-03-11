@@ -10,6 +10,7 @@
     }
   ],
   "settings": {
+    "chat.mcp.autoStart": true,
     "files.exclude": {
       "**/.turbo": true
     }

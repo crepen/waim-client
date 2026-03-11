@@ -1,4 +1,5 @@
 import { MainContainer, MainContainerHeader, MainContainerScrollContent } from '@/components/layout/common/page-container/PageContainer';
+import { AdminUserRowActionMenu } from '@/components/page/main/admin/AdminUserRowActionMenu';
 import authConfig from '@/config/auth/AuthConfig';
 import { AuthProvider } from '@crepen/auth';
 import { Badge, Box, Button, Card, Flex, Group, NativeSelect, Space, Stack, Text, TextInput, ThemeIcon, Title } from '@mantine/core';
@@ -84,6 +85,22 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
         return 'gray';
     };
 
+    const getStatusLabel = (userStatus: string) => {
+        if (userStatus === 'ACTIVE') {
+            return t('status_active');
+        }
+
+        if (userStatus === 'INACTIVE') {
+            return t('status_inactive');
+        }
+
+        if (userStatus === 'BLOCK') {
+            return t('status_block');
+        }
+
+        return userStatus;
+    };
+
     return (
         <MainContainer>
             <MainContainerHeader>
@@ -112,9 +129,9 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                                             defaultValue={status}
                                             data={[
                                                 { value: '', label: t('status_all') },
-                                                { value: 'ACTIVE', label: 'ACTIVE' },
-                                                { value: 'INACTIVE', label: 'INACTIVE' },
-                                                { value: 'BLOCK', label: 'BLOCK' }
+                                                { value: 'ACTIVE', label: t('status_active') },
+                                                { value: 'INACTIVE', label: t('status_inactive') },
+                                                { value: 'BLOCK', label: t('status_block') }
                                             ]}
                                         />
                                         <Button type='submit' size='md' variant='light'>
@@ -139,32 +156,32 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
                             <Stack gap='xs'>
                                 {rows.length > 0
                                     ? rows.map((item) => (
-                                        <Link
-                                            key={item.uid}
-                                            href={`/${locale}/admin/users/${encodeURIComponent(item.userId)}`}
-                                            style={{ textDecoration: 'none' }}
-                                        >
-                                            <Card withBorder px='md' py='sm' style={{ cursor: 'pointer' }}>
-                                                <Flex justify='space-between' align='center' wrap='wrap' gap='xs'>
-                                                    <Group gap='xs'>
-                                                        <ThemeIcon radius='xl' size='sm' color='blue' variant='light'>
-                                                            <SlUser size={12} />
-                                                        </ThemeIcon>
-                                                        <Badge color='blue' variant='light'>{item.role}</Badge>
-                                                        <Badge color='gray' variant='light'>{item.userId}</Badge>
+                                        <Card key={item.uid} withBorder px='md' py='sm'>
+                                            <Flex justify='space-between' align='center' wrap='wrap' gap='xs'>
+                                                <Group gap='xs'>
+                                                    <ThemeIcon radius='xl' size='sm' color='blue' variant='light'>
+                                                        <SlUser size={12} />
+                                                    </ThemeIcon>
+                                                    <Badge color='blue' variant='light'>{item.role}</Badge>
+                                                    <Badge color='gray' variant='light'>{item.userId}</Badge>
+                                                    <Link
+                                                        href={`/${locale}/admin/users/${encodeURIComponent(item.userId)}`}
+                                                        style={{ textDecoration: 'none' }}
+                                                    >
                                                         <Text fw={600}>{item.userName}</Text>
-                                                    </Group>
-                                                    <Group gap='xs'>
-                                                        <Badge variant='light' color={getStatusColor(item.status)}>
-                                                            {item.status}
-                                                        </Badge>
-                                                    </Group>
-                                                </Flex>
-                                                <Text size='xs' c='dimmed' mt={4}>
-                                                    {item.email || '-'}
-                                                </Text>
-                                            </Card>
-                                        </Link>
+                                                    </Link>
+                                                </Group>
+                                                <Group gap='xs'>
+                                                    <Badge variant='light' color={getStatusColor(item.status)}>
+                                                        {getStatusLabel(item.status)}
+                                                    </Badge>
+                                                    <AdminUserRowActionMenu user={item} />
+                                                </Group>
+                                            </Flex>
+                                            <Text size='xs' c='dimmed' mt={4}>
+                                                {item.email || '-'}
+                                            </Text>
+                                        </Card>
                                     ))
                                     : (
                                         <Text c='dimmed' size='sm'>{t('user_list_empty')}</Text>

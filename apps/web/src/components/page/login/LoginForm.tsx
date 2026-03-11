@@ -2,13 +2,21 @@
 import { LoginAction } from "@root/libs/actions/AuthAction";
 import { Alert, Button, PasswordInput, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { SubmitEvent, useState } from "react";
 
-export const LoginForm = () => {
+type LoginFormProps = {
+    showSignupLink?: boolean
+}
+
+export const LoginForm = ({ showSignupLink = true }: LoginFormProps) => {
     const t = useTranslations();
+    const params = useParams<{ locale: string }>();
 
     const [isLoading, setLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const locale = params?.locale ?? 'ko';
 
 
     const submitEventHandler = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -57,13 +65,25 @@ export const LoginForm = () => {
                     disabled={isLoading}
                 />
 
-                <Button type="submit" size="md" loading={isLoading} fullWidth mt={4}>
+                <Button type="submit" size="md" loading={isLoading} fullWidth mt={4} className='auth-primary-button'>
                     {isLoading ? t('page.login.loading') : t('page.login.login_submit_bt')}
                 </Button>
 
                 <Text c="dimmed" size="sm" ta="center">
                     {t('page.login.login_helper')}
                 </Text>
+
+                <div className='auth-link-actions'>
+                    <Link className='auth-link-button forgot' href={`/${locale}/forgot-password`}>
+                        {t('page.login.forgot_password_label')}
+                    </Link>
+
+                    {showSignupLink && (
+                        <Link className='auth-link-button signup' href={`/${locale}/signup`}>
+                            {t('page.login.move_to_signup')}
+                        </Link>
+                    )}
+                </div>
             </Stack>
         </form>
 

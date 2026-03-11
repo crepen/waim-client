@@ -136,3 +136,63 @@ export const UpdateAdminUserRoleAction = async (uid: string, role: string) => {
         return { state: false, message: t('role_update_failed') };
     }
 };
+
+export const ApproveAdminUserAction = async (uid: string) => {
+    const locale = await getLocale();
+    const t = await getTranslations('main.admin');
+
+    try {
+        const authProvider = AuthProvider.setConfig(authConfig(locale));
+        const sessionData = await authProvider.getSession();
+
+        const result = await UserApiProvider.approveAdminUser(
+            uid,
+            { locale, token: sessionData?.token?.accessToken ?? '' }
+        );
+
+        return { state: result.state, message: resolveApiMessage(result.message) ?? (result.state ? t('user_approve_success') : t('user_approve_failed')) };
+    }
+    catch (e) {
+        return { state: false, message: t('user_approve_failed') };
+    }
+};
+
+export const BlockAdminUserAction = async (uid: string) => {
+    const locale = await getLocale();
+    const t = await getTranslations('main.admin');
+
+    try {
+        const authProvider = AuthProvider.setConfig(authConfig(locale));
+        const sessionData = await authProvider.getSession();
+
+        const result = await UserApiProvider.blockAdminUser(
+            uid,
+            { locale, token: sessionData?.token?.accessToken ?? '' }
+        );
+
+        return { state: result.state, message: resolveApiMessage(result.message) ?? (result.state ? t('user_block_success') : t('user_block_failed')) };
+    }
+    catch (e) {
+        return { state: false, message: t('user_block_failed') };
+    }
+};
+
+export const DeleteAdminUserAction = async (uid: string) => {
+    const locale = await getLocale();
+    const t = await getTranslations('main.admin');
+
+    try {
+        const authProvider = AuthProvider.setConfig(authConfig(locale));
+        const sessionData = await authProvider.getSession();
+
+        const result = await UserApiProvider.deleteAdminUser(
+            uid,
+            { locale, token: sessionData?.token?.accessToken ?? '' }
+        );
+
+        return { state: result.state, message: resolveApiMessage(result.message) ?? (result.state ? t('user_delete_success') : t('user_delete_failed')) };
+    }
+    catch (e) {
+        return { state: false, message: t('user_delete_failed') };
+    }
+};

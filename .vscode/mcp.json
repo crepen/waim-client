@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "localPromptMemory": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "J:\\Develop\\ai\\mcp-server\\local-prompt-storage\\dist\\index.js"
+      ],
+      "envFile": "J:\\Develop\\ai\\mcp-server\\local-prompt-storage\\.env"
+    }
+  }
+}

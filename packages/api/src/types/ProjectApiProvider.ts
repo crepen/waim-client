@@ -62,3 +62,50 @@ export type UpdateProjectPermissionOption = {
     permissionUid: string;
     role: ProjectPermissionRole;
 }
+
+export type ProjectJobType = 'API_CRAWLER' | 'SCHEDULER' | 'API_HOOK';
+export type ProjectJobStatus = 'ACTIVE' | 'INACTIVE';
+export type ProjectRunStatus = 'SUCCESS' | 'FAILED' | 'SKIPPED';
+
+export type ProjectJobData = {
+    uid: string;
+    project_uid: string;
+    owner_uid: string;
+    task_type: ProjectJobType;
+    task_status: ProjectJobStatus;
+    interval_delay?: string;
+    next_run_timestamp?: number | null;
+    attributes: Record<string, string>;
+    create_timestamp?: number;
+    update_timestamp?: number;
+}
+
+export type SearchProjectJobProp = {
+    page?: number;
+    size?: number;
+}
+
+export type UpsertProjectJobOption = {
+    taskType: ProjectJobType;
+    intervalDelay: string;
+    taskStatus: ProjectJobStatus;
+    attributes: Record<string, string>;
+}
+
+export type ProjectJobLogData = {
+    idx: number;
+    project_uid: string;
+    task_uid: string;
+    task_type: ProjectJobType;
+    run_status: ProjectRunStatus;
+    response_status?: number | null;
+    duration_ms?: number | null;
+    message?: string | null;
+    create_timestamp?: number | null;
+}
+
+export type SearchProjectJobLogProp = {
+    page?: number;
+    size?: number;
+    jobUid?: string;
+}
