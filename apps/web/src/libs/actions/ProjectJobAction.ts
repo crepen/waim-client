@@ -3,7 +3,7 @@
 import authConfig from '@/config/auth/AuthConfig';
 import { AuthProvider } from '@crepen/auth';
 import { ProjectApiProvider } from '@waim/api';
-import type { ProjectJobStatus, ProjectJobType } from '@waim/api/types';
+import type { ProjectJobStatus, ProjectJobType, SearchProjectJobLogProp } from '@waim/api/types';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 const normalizeTaskType = (value: string): ProjectJobType => {
@@ -21,12 +21,28 @@ const normalizeTaskStatus = (value: string): ProjectJobStatus => {
     return normalized === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE';
 };
 
+const serializeHeaderFields = (formData: FormData, keyFieldName: string, valueFieldName: string) => {
+    const headerKeys = formData.getAll(keyFieldName).map((value) => value.toString().trim());
+    const headerValues = formData.getAll(valueFieldName).map((value) => value.toString().trim());
+    const maxLength = Math.max(headerKeys.length, headerValues.length);
+
+    return Array.from({ length: maxLength }, (_, index) => ({
+        key: headerKeys[index] ?? '',
+        value: headerValues[index] ?? ''
+    }))
+        .filter((item) => item.key.length > 0 && item.value.length > 0)
+        .map((item) => `${item.key}: ${item.value}`)
+        .join('\n');
+};
+
 const buildAttributesFromFields = (formData: FormData) => {
     const jobTitle = (formData.get('job-title')?.toString() ?? '').trim();
     const sourceUrl = (formData.get('source-url')?.toString() ?? '').trim();
     const sourceMethod = (formData.get('source-method')?.toString() ?? 'GET').trim().toUpperCase();
+    const sourceHeaders = serializeHeaderFields(formData, 'source-header-key', 'source-header-value');
     const targetUrl = (formData.get('target-url')?.toString() ?? '').trim();
     const targetMethod = (formData.get('target-method')?.toString() ?? 'POST').trim().toUpperCase();
+    const targetHeaders = serializeHeaderFields(formData, 'target-header-key', 'target-header-value');
 
     const attributes: Record<string, string> = {};
 
@@ -42,12 +58,20 @@ const buildAttributesFromFields = (formData: FormData) => {
         attributes.SOURCE_METHOD = sourceMethod;
     }
 
+    if (sourceHeaders) {
+        attributes.SOURCE_HEADERS = sourceHeaders;
+    }
+
     if (targetUrl) {
         attributes.TARGET_URL = targetUrl;
     }
 
     if (targetMethod) {
         attributes.TARGET_METHOD = targetMethod;
+    }
+
+    if (targetHeaders) {
+        attributes.TARGET_HEADERS = targetHeaders;
     }
 
     return {
@@ -193,5 +217,38 @@ export const RemoveProjectJobAction = async (projectUid: string, jobUid: string)
     }
     catch (e) {
         return { state: false, message: t('job_delete_failed') };
+    }
+};
+
+export const SearchProjectJobLogsAction = async (projectUid: string, options: SearchProjectJobLogProp) => {
+    const locale = await getLocale();
+    const t = await getTranslations('main.project');
+
+    try {
+        if (!projectUid) {
+            return { state: false, message: t('job_log_load_failed'), data: [] };
+        }
+
+        const session = await AuthProvider
+            .setConfig(authConfig(locale, t('api_list_error')))
+            .getSession();
+
+        const res = await ProjectApiProvider.searchProjectJobLogs(
+            projectUid,
+            options,
+            {
+                locale,
+                token: session?.token?.accessToken ?? ''
+            }
+        );
+
+        return {
+            state: res.state,
+            message: res.message ?? (res.state ? undefined : t('job_log_load_failed')),
+            data: res.data ?? []
+        };
+    }
+    catch (e) {
+        return { state: false, message: t('job_log_load_failed'), data: [] };
     }
 };

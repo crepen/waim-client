@@ -8,10 +8,32 @@ import { AuthProvider } from '@crepen/auth';
 import { ActionIcon, Alert, Group, Space, Title } from '@mantine/core';
 import { GroupApiProvider, ProjectApiProvider } from '@waim/api';
 import { getLocale, getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { SlSettings } from 'react-icons/sl';
 
 const MAX_GROUP_DEPTH = 6;
+
+const buildAliasPathByUid = (groupUid: string, groups: NonNullable<Awaited<ReturnType<typeof GroupApiProvider.searchGroup>>['data']>) => {
+    const aliasPath: string[] = [];
+    const byUid = new Map((groups ?? []).map((group) => [group.uid, group]));
+
+    let currentUid: string | undefined = groupUid;
+    let guard = 0;
+
+    while (currentUid && guard < 100) {
+        const group = byUid.get(currentUid);
+
+        if (!group) {
+            break;
+        }
+
+        aliasPath.unshift(group.group_alias ?? group.uid);
+        currentUid = group.parent_group_uid ?? undefined;
+        guard += 1;
+    }
+
+    return aliasPath;
+};
 
 type GroupDetailPageProp = {
     params: Promise<{ group_alias_path: string[] }>
@@ -44,18 +66,30 @@ const GroupDetailPage = async (prop: GroupDetailPageProp) => {
             token: session?.token?.accessToken ?? ''
         }
     );
+    const allGroups = allGroupResult.data ?? [];
 
     let parentGroupUid: string | null = null;
     let matchedGroup = undefined;
 
     for (const alias of aliasPath) {
-        matchedGroup = (allGroupResult.data ?? []).find((group) => {
+        matchedGroup = allGroups.find((group) => {
             const groupParentUid = group.parent_group_uid ?? null;
             return (group.group_alias ?? '').toLowerCase() === alias.toLowerCase()
                 && groupParentUid === parentGroupUid;
         });
 
         if (!matchedGroup?.uid) {
+            if (aliasPath.length === 1) {
+                const uidMatchedGroup = allGroups.find((group) => group.uid === alias);
+
+                if (uidMatchedGroup?.uid) {
+                    const canonicalAliasPath = buildAliasPathByUid(uidMatchedGroup.uid, allGroups)
+                        .map((segment) => encodeURIComponent(segment))
+                        .join('/');
+                    redirect(`/${locale}/group/${canonicalAliasPath}${isSettingPage ? '/setting' : ''}`);
+                }
+            }
+
             notFound();
         }
 
@@ -120,7 +154,7 @@ const GroupDetailPage = async (prop: GroupDetailPageProp) => {
         };
 
     const data = groupResult.data;
-    const childGroups = (allGroupResult.data ?? [])
+    const childGroups = allGroups
         .filter((group) => group.parent_group_uid === groupUid)
         .sort((a, b) => (a.group_name ?? '').localeCompare(b.group_name ?? ''));
     const projects = projectResult.data ?? [];

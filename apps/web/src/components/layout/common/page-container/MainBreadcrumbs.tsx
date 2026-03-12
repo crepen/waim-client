@@ -4,6 +4,10 @@ import { Anchor, Breadcrumbs, Text } from '@mantine/core';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 const buildLabel = (segment: string) => {
+	if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(segment)) {
+		return segment;
+	}
+
 	const map: Record<string, string> = {
 		group: 'Groups',
 		project: 'Projects',
@@ -19,7 +23,7 @@ const buildLabel = (segment: string) => {
 	}
 
 	return segment
-		.replace(/[-_]/g, ' ')
+		.replace(/_/g, ' ')
 		.replace(/\b\w/g, (ch) => ch.toUpperCase());
 };
 

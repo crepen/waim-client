@@ -44,7 +44,7 @@ const ProjectJobAddPage = async ({ params }: ProjectJobAddPageProps) => {
                 )}
 
                 {detailResult.data?.uid && (
-                    <ProjectJobManageForm projectUid={detailResult.data.uid} />
+                    <ProjectJobManageForm projectUid={detailResult.data.uid} mode='create' />
                 )}
             </MainContainerScrollContent>
         </MainContainer>

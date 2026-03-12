@@ -34,7 +34,7 @@ const ProjectJobPage = async ({ params }: ProjectJobPageProps) => {
         : { state: false, message: t('job_load_failed') };
 
     const logsResult = detailResult.data?.uid
-        ? await ProjectApiProvider.searchProjectJobLogs(detailResult.data.uid, { page: 0, size: 100 }, authConfigValue)
+        ? await ProjectApiProvider.searchProjectJobLogs(detailResult.data.uid, { page: 0, size: 1000 }, authConfigValue)
         : { state: false, message: t('job_log_load_failed') };
 
     return (

@@ -48,7 +48,7 @@ const ProjectDetailPage = async (prop: ProjectDetailPageProp) => {
     const logsResult = resultData.data?.uid
         ? await ProjectApiProvider.searchProjectJobLogs(
             resultData.data.uid,
-            { page: 0, size: 100 },
+            { page: 0, size: 1000 },
             {
                 locale,
                 token: (session?.token?.accessToken ?? "")
